@@ -1,0 +1,237 @@
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <title>D3 force simulation</title>
+  <script type="text/javascript" src="http://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<style type="text/css">
+  .selected {
+    fill: tomato;
+  }
+
+  .linkSelected {
+    stroke: tomato;
+  }
+
+  .conected {
+    fill: orange;
+  }
+
+  .toolbox {
+    padding: 3px;
+    background-color:darkkhaki
+  }
+
+  html, body {
+    margin:0;
+    padding:0;
+    overflow:hidden
+  }
+
+  svg {
+    position:fixed;
+    top:30px;
+    left:0;
+    height:100%;
+    width:100%
+  }
+</style>
+
+<body>
+  <div class="toolbox">
+    <input type="checkbox" id="show-author" title="Show author">
+    <label for="show-author">show author</label>&nbsp;&nbsp;
+    <label for="views-threshold">min views</label>
+    <input type="number" id="views-threshold" min="0" max="1000" step="100" value="0">
+    <input type="radio" id="project1" name="project" onchange="chnageProject(this);" value="kondoumh" checked>kondoumh
+    <input type="radio" id="project2" name="project" onchange="chnageProject(this);" value="help-jp">help-jp
+  </div>
+  <svg></svg>
+  <script>
+  (async () => {
+    document.querySelector("#show-author").addEventListener("change", async e => {
+      d3.select("svg").selectAll("*").remove();
+      await showGraph(e.target.checked, getSelectedProject());
+    });
+    await showGraph(false, getSelectedProject());
+  })();
+
+  function getSelectedProject() {
+    pj1 = document.querySelector("#project1")
+    pj2 = document.querySelector("#project2")
+    if (pj1.checked) return pj1.value
+    if (pj2.checked) return pj2.value
+  }
+
+  async function chnageProject(src) {
+    d3.select("svg").selectAll("*").remove();
+    checked = document.querySelector("#show-author").checked
+    await showGraph(checked, getSelectedProject());
+  }
+
+  async function showGraph(showAuthor, projectName) {
+    const width = document.querySelector("svg").clientWidth;
+    const height = document.querySelector("svg").clientHeight;
+
+    const res = await fetch(`https://sb-data-kondoumh.netlify.app/${projectName}_graph.json`, { mode: "cors" });
+    const json = await res.json();
+
+    let nodesData = json.pages.map(page =>
+    ({
+      id: page.id,
+      title: page.title,
+      x: width * Math.random(),
+      y: height * Math.random(),
+      rx: 70,
+      ry: 20,
+      user: false
+    }));
+
+    if (showAuthor) {
+      const users = json.users.map(user => ({
+        id: user.id,
+        title: user.name,
+        x: width * Math.random(),
+        y: height * Math.random(),
+        rx: 70,
+        ry: 20,
+        user: true
+      }));
+      nodesData = nodesData.concat(users);
+    }
+
+    let linksData = json.links.map(link =>
+    ({
+      source: nodesData.findIndex(node => node.id === link.from),
+      target: nodesData.findIndex(node => node.id === link.to),
+      l: Math.random() * 200 + 5 + 70 + 20
+    }));
+
+    if (showAuthor) {
+      const userPages = json.userPages.map(up =>
+      ({
+        source: nodesData.findIndex(node => node.id === up.user),
+        target: nodesData.findIndex(node => node.id === up.page),
+        l: Math.random() * 200 + 5 + 70 + 20
+      }));
+      linksData = linksData.concat(userPages);
+    }
+
+    const link = d3.select("svg")
+      .selectAll("line")
+      .data(linksData)
+      .enter()
+      .append("line")
+      .attr("stroke-width", 2)
+      .attr("stroke", "black");
+
+    const nodeGroup = d3.select("svg")
+      .selectAll("g")
+      .data(nodesData)
+      .enter()
+      .append("g")
+      .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended))
+      .on("click", clicked);
+
+    nodeGroup.append("ellipse")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
+      .attr("rx", d => d.rx)
+      .attr("ry", d => d.ry)
+      .attr("fill", d => d.user ? "Green" : "Gold")
+      .attr("stroke", "black");
+
+    nodeGroup.append("text")
+      .attr("x", d => d.x)
+      .attr("y", d => d.y)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .style("fill", "steelbule")
+      .text(d => d.title);
+
+    function clicked(d) {
+      d3.selectAll(".selected").classed("selected", false);
+      d3.selectAll(".conected").classed("conected", false);
+      d3.selectAll("line").classed("linkSelected", false);
+
+      d3.select(this).classed("selected", true);
+
+      d3.selectAll("line")
+        .filter((v, i) => {
+          if (d == v.source) {
+            nodeGroup.each((vj, j) => {
+              if (v.target == vj) d3.select(this).classed("conected", true);
+            });
+            return true;
+          } else if (d == v.target) {
+            nodeGroup.each((vj, j) => {
+              if (v.source == vj) d3.select(this).classed("conected", true);
+            });
+            return true;
+          }
+        }).classed("linkSelected", true);
+    }
+
+    const simulation = d3.forceSimulation()
+      .force("link",
+        d3.forceLink()
+          .distance(d => d.l)
+          .iterations(2))
+      .force("collide",
+        d3.forceCollide()
+          .radius(d => d.r)
+          .strength(0.7)
+          .iterations(2))
+      .force("charge", d3.forceManyBody().strength(-100))
+      .force("x", d3.forceX().strength(0.01).x(width / 2))
+      .force("y", d3.forceY().strength(0.01).y(height / 2))
+      .force("center", d3.forceCenter(width / 2, height / 2));
+
+    simulation
+      .nodes(nodesData)
+      .on("tick", ticked);
+
+    simulation.force("link")
+      .links(linksData)
+      .id(d => d.index);
+
+    function ticked() {
+      link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y)
+      nodeGroup.select("ellipse")
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+      nodeGroup.select("text")
+        .attr("x", d => d.x)
+        .attr("y", d => d.y);
+    }
+
+    function dragstarted(d) {
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+  }
+  </script>
+</body>
+
+</html>
