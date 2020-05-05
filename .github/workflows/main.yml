@@ -24,8 +24,14 @@ jobs:
         sbgraph fetch
         sbgraph aggregate
         sbgraph graph -i=true -a=true -j=true
+        sbgraph project -p help-jp
+        sbgraph fetch
+        sbgraph aggregate
+        sbgraph graph -i=true -a=true -j=true
         ls -l _work/kondoumh | wc -l
+        ls -l _work/help-jp | wc -l
         rm -r _work/kondoumh
+        rm -r _work/help-jp
         mv _work/* public
 
     - name: Deploy to Netlify
