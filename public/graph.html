@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>D3 force simulation</title>
-  <script type="text/javascript" src="http://d3js.org/d3.v5.min.js"></script>
+  <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 
 <style type="text/css">
@@ -75,7 +75,7 @@
     const width = document.querySelector("svg").clientWidth;
     const height = document.querySelector("svg").clientHeight;
 
-    const res = await fetch(`https://sb-data-kondoumh.netlify.app/${projectName}_graph.json`, { mode: "cors" });
+    const res = await fetch(`${projectName}_graph.json`);
     const json = await res.json();
 
     let nodesData = json.pages.map(page =>
