@@ -1,0 +1,40 @@
+name: sbgraph
+
+on:
+  push:
+
+jobs:
+
+  buid:
+    name: Gen data and publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run sbgraph
+      run : |
+        curl -LO https://github.com/mamezou-tech/sbgraph/releases/download/v0.1.0/sbgraph-linux-amd64.tar.gz
+        tar xvf sbgraph-linux-amd64.tar.gz
+        mkdir ~/bin
+        export PATH=$PATH:~/bin
+        mv sbgraph ~/bin
+        sbgraph init
+        sbgraph project -p kondoumh
+        sbgraph fetch
+        sbgraph aggregate
+        sbgraph graph -i=true
+        ls -l _work/kondoumh | wc -l
+        rm -r _work/kondoumh
+        mv _work/* public
+
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v1.0
+      with:
+        publish-dir: './public'
+        production-branch: master
+        github-token: ${{ secrets.GH_TOKEN }}
+        deploy-message: "Deploy from GitHub Actions"
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
