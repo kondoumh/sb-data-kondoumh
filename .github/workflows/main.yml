@@ -23,7 +23,7 @@ jobs:
         sbgraph project -p kondoumh
         sbgraph fetch
         sbgraph aggregate
-        sbgraph graph -i=true
+        sbgraph graph -i=true -a=true -j=true
         ls -l _work/kondoumh | wc -l
         rm -r _work/kondoumh
         mv _work/* public
