@@ -14,7 +14,7 @@ jobs:
 
     - name: Run sbgraph
       run : |
-        curl -LO https://github.com/mamezou-tech/sbgraph/releases/download/v0.1.0/sbgraph-linux-amd64.tar.gz
+        curl -LO https://github.com/mamezou-tech/sbgraph/releases/download/v0.2.0/sbgraph-linux-amd64.tar.gz
         tar xvf sbgraph-linux-amd64.tar.gz
         mkdir ~/bin
         export PATH=$PATH:~/bin
