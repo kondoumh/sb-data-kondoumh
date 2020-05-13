@@ -46,8 +46,8 @@
     <label for="views-threshold">min views</label>
     <input type="number" id="views-threshold" min="0" max="1000" step="100" value="0">
     <input type="radio" id="project1" name="project" onchange="chnageProject(this);" value="kondoumh" checked>kondoumh
-    <input type="radio" id="project2" name="project" onchange="chnageProject(this);" value="help-jp">help-jp
-    <button id='resetButton'>reset</button>
+    <input type="radio" id="project2" name="project" onchange="chnageProject(this);" value="help-jp">help-jp&nbsp;&nbsp;
+    <button id='resetButton'>reset scale</button>
   </div>
   <svg></svg>
   <script>
@@ -236,7 +236,7 @@
     .on("click", resetted);
  
     const zoom = d3.zoom()
-      .scaleExtent([1/2, 40])
+      .scaleExtent([1/3, 40])
       .on("zoom", zoomed);
 
     link.call(zoom);
