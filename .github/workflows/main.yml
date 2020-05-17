@@ -34,10 +34,20 @@ jobs:
         rm -r _work/help-jp
         mv _work/* public
 
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
+
+    - name: Build App
+      run: |
+        npm install
+        npm run build
+
     - name: Deploy to Netlify
       uses: nwtgck/actions-netlify@v1.0
       with:
-        publish-dir: './public'
+        publish-dir: './dist'
         production-branch: master
         github-token: ${{ secrets.GH_TOKEN }}
         deploy-message: "Deploy from GitHub Actions"
