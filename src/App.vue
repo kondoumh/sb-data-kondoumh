@@ -8,6 +8,7 @@
       <div id="nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/list">List</router-link> |
+        <a href="graph.html">Graph</a> |
         <router-link to="/about">About</router-link>
       </div>
     </v-app-bar>
