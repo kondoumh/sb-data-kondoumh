@@ -1,26 +1,31 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="posts"
+    :items="pages"
     :items-per-page="itemsPerPage"
     :footer-props="{
       'items-per-page-options': [5, 10, 15, 20, 25, 30]
     }"
     class="elevation-1"
   >
-    <template v-slot:item.date="{ item }">
-      {{ item.date.substring(0, 19) }}
+    <template v-slot:item.pin="{ item }">
+      {{ item.pin != 0 ? "&#128204;" : "" }}
     </template>
-    <template v-slot:item.slug="{ item }">
-      <a :href="item.post_url" target="_blank">{{ item.slug ? item.slug : item.id_string }}</a>
+    <template v-slot:item.views="{ item }">
+      {{ item.views }}
     </template>
-    <template v-slot:body.append>
-      <tr>
-        <td>
-          <v-select v-model="type" :items="types" label="type"></v-select>
-          <v-text-field v-model="note_count" type="number" label="More than"></v-text-field>
-        </td>
-      </tr>
+    <template v-slot:item.linked="{ item }">
+      {{ item.linked }}
+    </template>
+    <template v-slot:item.updated="{ item }">
+      {{ formatDate(item.updated) }}
+    </template>
+    <template v-slot:item.title="{ item }">
+      <a
+      :href="'https://scrapbox.io/'+ projectName + '/' + encodeTitle(item.title)"
+      target="_blank">{{ item.title }}</a>    </template>
+    <template v-slot:item.image="{ item }">
+      <img :src="item.image" style="width: auto; height: 25px">
     </template>
   </v-data-table>
 </template>
@@ -36,44 +41,42 @@
           mode: 'cors',
         })
         const json = await res.json()
-        this.posts = json
-      }
+        this.pages = await json.pages
+      },
+      formatDate (timestamp) {
+        let date = new Date()
+        date.setTime(timestamp * 1000)
+        const params = {
+          year: "numeric", month: "numeric", day: "numeric",
+          hour: "numeric", minute: "numeric", second: "numeric",
+          hour12: false
+        }
+        return date.toLocaleString(navigator.language, params)
+      },
+      encodeTitle(title) {
+        return encodeURIComponent(title)
+      },
     },
     computed: {
-      url: () => 'https://tmblrscore-kondoumh.netlify.app/posts.json',
+      url: () => 'kondoumh.json',
       headers() {
         return [
-          { text: 'Date', value: 'date', filterable: false },
-          { text: 'Slug', value: 'slug', sortable: false },
-          {
-            text: 'Type',
-            value: 'type',
-            filter: value => {
-              if (!this.type) return true
-              return this.type.startsWith(value)
-            }
-          },
-          {
-            text: 'Count',
-            value: 'note_count',
-            filter: value => {
-              if (!this.note_count) return true
-              return value > parseInt(this.note_count)
-            }
-          }
+          { text: 'Pin', value: 'pin'},
+          { text: 'Views', value: 'views'},
+          { text: 'Linked', value: 'linked'},
+          { text: 'Updated', value: 'updated'},
+          { text: 'Title', value: 'title', sortable: false },
+          { text: 'Image', value: 'image', sortable: false},
         ]
       },
     },
     data: () => ({
-      posts: [],
-      types: ["", "quote", "photo", "text", "link"],
-      type: "",
-      note_count: "",
-      itemsPerPage: 5,
+      pages: [],
+      projectName: 'kondoumh',
+      types: ["pin", "updated", "title", "images"],
+      itemsPerPage: 10,
     })
   }
 </script>
 
-<style>
-
-</style>
+<style></style>
