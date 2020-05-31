@@ -37,7 +37,7 @@
     },
     methods: {
       async fetchData () {
-        const res = await fetch(this.projectName + '.json', {
+        const res = await fetch('data/' + this.projectName + '.json', {
           mode: 'cors',
         })
         const json = await res.json()

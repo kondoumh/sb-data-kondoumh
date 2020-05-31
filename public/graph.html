@@ -77,7 +77,7 @@
     const width = document.querySelector("svg").clientWidth;
     const height = document.querySelector("svg").clientHeight;
 
-    const res = await fetch(`${projectName}_graph.json`);
+    const res = await fetch(`data/${projectName}_graph.json`);
     const json = await res.json();
 
     let nodesData = json.pages.map(page =>

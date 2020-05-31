@@ -32,7 +32,8 @@ jobs:
         ls -l _work/help-jp | wc -l
         rm -r _work/kondoumh
         rm -r _work/help-jp
-        mv _work/* public
+        mkdir public/data
+        mv _work/* public/data
 
     - name: Setup Node
       uses: actions/setup-node@v1
