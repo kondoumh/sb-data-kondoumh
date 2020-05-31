@@ -1,5 +1,23 @@
 <template>
-  <div class="about">
-    <h1>List</h1>
-  </div>
+  <v-container>
+    <v-content>
+      <ScrapboxPages/>
+    </v-content>
+  </v-container>
 </template>
+
+<script>
+import ScrapboxPages from '@/components/ScrapboxPages'
+
+export default {
+  name: 'List',
+  components: {
+    ScrapboxPages
+  },
+  data () {
+    return {
+      //
+    }
+  }
+}
+</script>

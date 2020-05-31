@@ -1,8 +1,10 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Scrapbox viz"/>
-  </div>
+  <v-container>
+    <div class="home">
+      <img alt="Vue logo" src="../assets/logo.png">
+      <HelloWorld msg="Welcome to Scrapbox viz"/>
+    </div>
+  </v-container>
 </template>
 
 <script>
