@@ -37,7 +37,7 @@
     },
     methods: {
       async fetchData () {
-        const res = await fetch(this.url, {
+        const res = await fetch(this.projectName + '.json', {
           mode: 'cors',
         })
         const json = await res.json()
@@ -58,7 +58,6 @@
       },
     },
     computed: {
-      url: () => 'kondoumh.json',
       headers() {
         return [
           { text: 'Pin', value: 'pin'},
