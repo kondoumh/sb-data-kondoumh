@@ -1,11 +1,6 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <p>
-      <ul>
-        <li><a href="graph.html">Scrapbox Graph</a></li>
-      </ul>
-    </p>
   </div>
 </template>
 

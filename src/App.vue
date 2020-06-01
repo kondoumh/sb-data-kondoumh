@@ -7,10 +7,12 @@
       <v-spacer></v-spacer>
       <div id="nav">
         <router-link to="/">Home</router-link> |
-        <router-link to="/list">List</router-link> |
+        <router-link to="/list">Full List</router-link> |
         <a href="graph.html">Graph</a> |
         <router-link to="/about">About</router-link>
       </div>
+      <v-spacer></v-spacer>
+      <span>powered by <a href="https://github.com/mamezou-tech/sbgraph" target="_blank">sbgraph</a></span>
     </v-app-bar>
     <v-content>
       <router-view />
