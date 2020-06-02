@@ -3,7 +3,7 @@
     <div class="home">
       <HelloWorld msg="Latest pages"/>
     </div>
-    <ScrapboxPages/>
+    <ScrapboxPages projectName="kondoumh"/>
   </v-container>
 </template>
 

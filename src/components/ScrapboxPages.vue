@@ -35,6 +35,9 @@
     async mounted () {
       this.fetchData()
     },
+    props: {
+      projectName: String
+    },
     methods: {
       async fetchData () {
         const res = await fetch('data/' + this.projectName + '.json', {
@@ -71,7 +74,6 @@
     },
     data: () => ({
       pages: [],
-      projectName: 'kondoumh',
       types: ["pin", "updated", "title", "images"],
       itemsPerPage: 10,
     })
