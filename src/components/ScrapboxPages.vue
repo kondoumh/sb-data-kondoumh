@@ -1,8 +1,8 @@
 <template>
   <v-card>
     <v-card-title>
-      {{ projectName }}
-      <v-spacer></v-spacer>
+      {{ projectName }} : {{ updated }}
+      <v-spacer/>
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
@@ -59,6 +59,7 @@
         })
         const json = await res.json()
         this.pages = await json.pages
+        this.updated = await json.date
       },
       formatDate (timestamp) {
         let date = new Date()
@@ -88,6 +89,7 @@
     },
     data: () => ({
       search: '',
+      updated: '',
       pages: [],
       types: ["pin", "updated", "title", "images"],
       itemsPerPage: 10,
