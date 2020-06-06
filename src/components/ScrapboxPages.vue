@@ -65,8 +65,8 @@
         let date = new Date()
         date.setTime(timestamp * 1000)
         const params = {
-          year: "numeric", month: "numeric", day: "numeric",
-          hour: "numeric", minute: "numeric", second: "numeric",
+          year: 'numeric', month: 'numeric', day: 'numeric',
+          hour: 'numeric', minute: 'numeric', second: 'numeric',
           hour12: false
         }
         return date.toLocaleString(navigator.language, params)
@@ -91,7 +91,7 @@
       search: '',
       updated: '',
       pages: [],
-      types: ["pin", "updated", "title", "images"],
+      types: ['pin', 'updated', 'title', 'images'],
       itemsPerPage: 10,
     })
   }
