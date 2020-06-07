@@ -1,7 +1,19 @@
 <template>
   <v-card>
     <v-card-title>
-      {{ projectName }} : {{ updated }}
+      {{ projectName }}
+      <v-spacer/>
+      {{ updated }}
+    </v-card-title>
+    <v-card-title>
+      <v-text-field
+        v-model="views"
+        type="number"
+        label="More than"
+        single-line
+        hide-details
+        >
+      </v-text-field>
       <v-spacer/>
       <v-text-field
         v-model="search"
@@ -79,7 +91,14 @@
       headers() {
         return [
           { text: 'Pin', value: 'pin'},
-          { text: 'Views', value: 'views'},
+          { 
+            text: 'Views',
+            value: 'views',
+            filter: value => {
+              if (!this.views) return true
+              return value > parseInt(this.views)
+            }
+          },
           { text: 'Linked', value: 'linked'},
           { text: 'Updated', value: 'updated'},
           { text: 'Title', value: 'title', sortable: false },
@@ -89,6 +108,7 @@
     },
     data: () => ({
       search: '',
+      views: '',
       updated: '',
       pages: [],
       types: ['pin', 'updated', 'title', 'images'],
