@@ -4,16 +4,7 @@
     tile
   >
     <svg id="svg"/>
-    <v-toolbar collaspe>
-      <v-toolbar-title>{{ project }}</v-toolbar-title>
-      <v-spacer/>
-      <v-checkbox
-        v-model="showAuthor"
-        label="Show author"
-        single-line
-        hide-details
-      ></v-checkbox>
-      <v-spacer/>
+    <v-toolbar dense floating>
       <v-radio-group
         v-model="project"
         :mandatory="true"
@@ -24,6 +15,17 @@
         <v-radio label="kondoumh" value="kondoumh"></v-radio>
         <v-radio label="help-jp" value="help-jp"></v-radio>
       </v-radio-group>
+      <v-divider
+        class="mx-4"
+        inset
+        vertical
+      ></v-divider>
+      <v-checkbox
+        v-model="showAuthor"
+        label="Show author"
+        single-line
+        hide-details
+      ></v-checkbox>
     </v-toolbar>
   </v-card>
 </template>
