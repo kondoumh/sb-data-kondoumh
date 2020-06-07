@@ -1,194 +1,228 @@
 <template>
-  <div class="graph">
-    <svg id="svg" width="1000" height="700"></svg>
-  </div>
+  <v-card
+    flat
+    tile
+  >
+    <svg id="svg"/>
+    <v-toolbar collaspe>
+      <v-toolbar-title>kondoumh</v-toolbar-title>
+      <v-spacer/>
+      <v-checkbox
+        v-model="showAuthor"
+        label="Show author"
+        single-line
+        hide-details
+      ></v-checkbox>
+    </v-toolbar>
+  </v-card>
 </template>
 
 <script>
 import * as d3 from 'd3'
+
 export default {
   name: 'graph',
   components: {
   },
-  async mounted () {
-    const width = document.querySelector('svg').clientWidth
-    const height = document.querySelector('svg').clientHeight
-
-    const res = await fetch(`data/kondoumh_graph.json`)
-    const json = await res.json()
-
-    let nodesData = json.pages.map(page =>
-    ({
-      id: page.id,
-      title: page.title,
-      x: width * Math.random(),
-      y: height * Math.random(),
-      rx: 70,
-      ry: 20,
-      user: false
-    }))
-
-    const users = json.users.map(user => ({
-      id: user.id,
-      title: user.name,
-      x: width * Math.random(),
-      y: height * Math.random(),
-      rx: 70,
-      ry: 20,
-      user: true
-    }))
-    nodesData = nodesData.concat(users)
-
-    let linksData = json.links.map(link =>
-    ({
-      source: nodesData.findIndex(node => node.id === link.from),
-      target: nodesData.findIndex(node => node.id === link.to),
-      l: Math.random() * 200 + 5 + 70 + 20
-    }))
-
-    const userPages = json.userPages.map(up =>
-    ({
-      source: nodesData.findIndex(node => node.id === up.user),
-      target: nodesData.findIndex(node => node.id === up.page),
-      l: Math.random() * 200 + 5 + 70 + 20
-    }))
-    linksData = linksData.concat(userPages)
-
-    const link = d3.select('svg')
-      .selectAll('line')
-      .data(linksData)
-      .enter()
-      .append('line')
-      .attr('stroke-width', 2)
-      .attr('stroke', 'black')
-
-    const nodeGroup = d3.select('svg')
-      .selectAll('g')
-      .data(nodesData)
-      .enter()
-      .append('g')
-      .call(d3.drag()
-        .on('start', dragstarted)
-        .on('drag', dragged)
-        .on('end', dragended))
-      .on('click', clicked)
-
-    nodeGroup.append('ellipse')
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y)
-      .attr('rx', d => d.rx)
-      .attr('ry', d => d.ry)
-      .attr('fill', d => d.user ? 'Green' : 'Gold')
-      .attr('stroke', 'black')
-
-    nodeGroup.append('text')
-      .attr('x', d => d.x)
-      .attr('y', d => d.y)
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', 'middle')
-      .style('fill', 'steelbule')
-      .text(d => d.title)
-
-    function clicked(d) {
-      d3.selectAll('.selected').classed('selected', false)
-      d3.selectAll('.conected').classed('conected', false)
-      d3.selectAll('line').classed('linkSelected', false)
-
-      d3.select(this).classed('selected', true)
-
-      d3.selectAll('line')
-        .filter((v) => {
-          if (d == v.source) {
-            nodeGroup.each(vj => {
-              if (v.target == vj) d3.select(this).classed('conected', true)
-            })
-            return true
-          } else if (d == v.target) {
-            nodeGroup.each(vj => {
-              if (v.source == vj) d3.select(this).classed('conected', true)
-            })
-            return true
-          }
-        }).classed('linkSelected', true)
+  data: () => {
+    return {
+      showAuthor: false
     }
+  },
+  async mounted () {
+    await this.render()
+  },
+  watch: {
+    showAuthor: 'render'
+  },
+  methods: {
+    async render() {
+      d3.select('svg').selectAll('*').remove()
+      const width = document.querySelector('svg').clientWidth
+      const height = document.querySelector('svg').clientHeight
 
-    const simulation = d3.forceSimulation()
-      .force('link',
-        d3.forceLink()
-          .distance(d => d.l)
-          .iterations(2))
-      .force('collide',
-        d3.forceCollide()
-          .radius(d => d.r)
-          .strength(0.7)
-          .iterations(2))
-      .force('charge', d3.forceManyBody().strength(-100))
-      .force('x', d3.forceX().strength(0.01).x(width / 2))
-      .force('y', d3.forceY().strength(0.01).y(height / 2))
-      .force('center', d3.forceCenter(width / 2, height / 2))
+      const res = await fetch(`data/kondoumh_graph.json`)
+      const json = await res.json()
 
-    simulation
-      .nodes(nodesData)
-      .on('tick', ticked)
+      let nodesData = json.pages.map(page =>
+      ({
+        id: page.id,
+        title: page.title,
+        x: width * Math.random(),
+        y: height * Math.random(),
+        rx: 70,
+        ry: 20,
+        user: false
+      }))
 
-    simulation.force('link')
-      .links(linksData)
-      .id(d => d.index)
+      if (this.showAuthor) {
+        const users = json.users.map(user => ({
+          id: user.id,
+          title: user.name,
+          x: width * Math.random(),
+          y: height * Math.random(),
+          rx: 70,
+          ry: 20,
+          user: true
+        }))
+        nodesData = nodesData.concat(users)
+      }
 
-    function ticked() {
-      link
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y)
-      nodeGroup.select('ellipse')
+
+      let linksData = json.links.map(link =>
+      ({
+        source: nodesData.findIndex(node => node.id === link.from),
+        target: nodesData.findIndex(node => node.id === link.to),
+        l: Math.random() * 200 + 5 + 70 + 20
+      }))
+
+      if (this.showAuthor) {
+        const userPages = json.userPages.map(up =>
+        ({
+          source: nodesData.findIndex(node => node.id === up.user),
+          target: nodesData.findIndex(node => node.id === up.page),
+          l: Math.random() * 200 + 5 + 70 + 20
+        }))
+        linksData = linksData.concat(userPages)
+      }
+
+      const link = d3.select('svg')
+        .selectAll('line')
+        .data(linksData)
+        .enter()
+        .append('line')
+        .attr('stroke-width', 2)
+        .attr('stroke', 'black')
+
+      const nodeGroup = d3.select('svg')
+        .selectAll('g')
+        .data(nodesData)
+        .enter()
+        .append('g')
+        .call(d3.drag()
+          .on('start', dragstarted)
+          .on('drag', dragged)
+          .on('end', dragended))
+        .on('click', clicked)
+
+      nodeGroup.append('ellipse')
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
-      nodeGroup.select('text')
+        .attr('rx', d => d.rx)
+        .attr('ry', d => d.ry)
+        .attr('fill', d => d.user ? 'Green' : 'Gold')
+        .attr('stroke', 'black')
+
+      nodeGroup.append('text')
         .attr('x', d => d.x)
         .attr('y', d => d.y)
-    }
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .style('fill', 'steelbule')
+        .text(d => d.title)
 
-    function dragstarted(d) {
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart()
-      d.fx = d.x
-      d.fy = d.y
-    }
+      function clicked(d) {
+        d3.selectAll('.selected').classed('selected', false)
+        d3.selectAll('.conected').classed('conected', false)
+        d3.selectAll('line').classed('linkSelected', false)
 
-    function dragged(d) {
-      d.fx = d3.event.x
-      d.fy = d3.event.y
-    }
+        d3.select(this).classed('selected', true)
 
-    function dragended(d) {
-      if (!d3.event.active) simulation.alphaTarget(0)
-      d.fx = null
-      d.fy = null
-    }
+        d3.selectAll('line')
+          .filter((v) => {
+            if (d == v.source) {
+              nodeGroup.each(vj => {
+                if (v.target == vj) d3.select(this).classed('conected', true)
+              })
+              return true
+            } else if (d == v.target) {
+              nodeGroup.each(vj => {
+                if (v.source == vj) d3.select(this).classed('conected', true)
+              })
+              return true
+            }
+          }).classed('linkSelected', true)
+      }
 
-    d3.select('#resetButton')
-    .on('click', resetted)
- 
-    const zoom = d3.zoom()
-      .scaleExtent([1/3, 40])
-      .on('zoom', zoomed)
+      const simulation = d3.forceSimulation()
+        .force('link',
+          d3.forceLink()
+            .distance(d => d.l)
+            .iterations(2))
+        .force('collide',
+          d3.forceCollide()
+            .radius(d => d.r)
+            .strength(0.7)
+            .iterations(2))
+        .force('charge', d3.forceManyBody().strength(-100))
+        .force('x', d3.forceX().strength(0.01).x(width / 2))
+        .force('y', d3.forceY().strength(0.01).y(height / 2))
+        .force('center', d3.forceCenter(width / 2, height / 2))
 
-    link.call(zoom)
-    nodeGroup.call(zoom)
+      simulation
+        .nodes(nodesData)
+        .on('tick', ticked)
+
+      simulation.force('link')
+        .links(linksData)
+        .id(d => d.index)
+
+      function ticked() {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y)
+        nodeGroup.select('ellipse')
+          .attr('cx', d => d.x)
+          .attr('cy', d => d.y)
+        nodeGroup.select('text')
+          .attr('x', d => d.x)
+          .attr('y', d => d.y)
+      }
+
+      function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+        d.fx = d.x
+        d.fy = d.y
+      }
+
+      function dragged(d) {
+        d.fx = d3.event.x
+        d.fy = d3.event.y
+      }
+
+      function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0)
+        d.fx = null
+        d.fy = null
+      }
+
+      d3.select('#resetButton')
+      .on('click', resetted)
   
-    function zoomed() {
-      link.attr('transform', d3.event.transform)
-      nodeGroup.attr('transform', d3.event.transform)
+      const zoom = d3.zoom()
+        .scaleExtent([1/3, 40])
+        .on('zoom', zoomed)
+
+      link.call(zoom)
+      nodeGroup.call(zoom)
+    
+      function zoomed() {
+        link.attr('transform', d3.event.transform)
+        nodeGroup.attr('transform', d3.event.transform)
+      }
+    
+      function resetted() {
+        link.transition()
+          .duration(750)
+          .call(zoom.transform, d3.zoomIdentity)
+        nodeGroup.transition()
+          .duration(750)
+          .call(zoom.transform, d3.zoomIdentity)
+      }
     }
-  
-    function resetted() {
-      link.transition()
-        .duration(750)
-        .call(zoom.transform, d3.zoomIdentity)
-      nodeGroup.transition()
-        .duration(750)
-        .call(zoom.transform, d3.zoomIdentity)
-    }  }
+  }
 }
 </script>
 
@@ -217,6 +251,7 @@ export default {
   }
 
   svg {
+    background: white;
     position:fixed;
     top:30px;
     left:0;
