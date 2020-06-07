@@ -7,196 +7,220 @@
 <script>
 import * as d3 from 'd3'
 export default {
-  name: 'zoomable',
+  name: 'graph',
   components: {
   },
-  mounted () {
-    // create somewhere to put the force directed graph
-    let svg = d3.select('svg')
-    let width = +svg.attr('width')
-    let height = +svg.attr('height')
-    let radius = 15
-    let nodesData = [
-      { 'name': 'Lillian', 'sex': 'F' },
-      { 'name': 'Gordon', 'sex': 'M' },
-      { 'name': 'Sylvester', 'sex': 'M' },
-      { 'name': 'Mary', 'sex': 'F' },
-      { 'name': 'Helen', 'sex': 'F' },
-      { 'name': 'Jamie', 'sex': 'M' },
-      { 'name': 'Jessie', 'sex': 'F' },
-      { 'name': 'Ashton', 'sex': 'M' },
-      { 'name': 'Duncan', 'sex': 'M' },
-      { 'name': 'Evette', 'sex': 'F' },
-      { 'name': 'Mauer', 'sex': 'M' },
-      { 'name': 'Fray', 'sex': 'F' },
-      { 'name': 'Duke', 'sex': 'M' },
-      { 'name': 'Baron', 'sex': 'M' },
-      { 'name': 'Infante', 'sex': 'M' },
-      { 'name': 'Percy', 'sex': 'M' },
-      { 'name': 'Cynthia', 'sex': 'F' },
-      { 'name': 'Feyton', 'sex': 'M' },
-      { 'name': 'Lesley', 'sex': 'F' },
-      { 'name': 'Yvette', 'sex': 'F' },
-      { 'name': 'Maria', 'sex': 'F' },
-      { 'name': 'Lexy', 'sex': 'F' },
-      { 'name': 'Peter', 'sex': 'M' },
-      { 'name': 'Ashley', 'sex': 'F' },
-      { 'name': 'Finkler', 'sex': 'M' },
-      { 'name': 'Damo', 'sex': 'M' },
-      { 'name': 'Imogen', 'sex': 'F' }
-    ]
-    // Sample links data
-    // type: A for Ally, E for Enemy
-    let linksData = [
-      { 'source': 'Sylvester', 'target': 'Gordon', 'type': 'A' },
-      { 'source': 'Sylvester', 'target': 'Lillian', 'type': 'A' },
-      { 'source': 'Sylvester', 'target': 'Mary', 'type': 'A' },
-      { 'source': 'Sylvester', 'target': 'Jamie', 'type': 'A' },
-      { 'source': 'Sylvester', 'target': 'Jessie', 'type': 'A' },
-      { 'source': 'Sylvester', 'target': 'Helen', 'type': 'A' },
-      { 'source': 'Helen', 'target': 'Gordon', 'type': 'A' },
-      { 'source': 'Mary', 'target': 'Lillian', 'type': 'A' },
-      { 'source': 'Ashton', 'target': 'Mary', 'type': 'A' },
-      { 'source': 'Duncan', 'target': 'Jamie', 'type': 'A' },
-      { 'source': 'Gordon', 'target': 'Jessie', 'type': 'A' },
-      { 'source': 'Sylvester', 'target': 'Fray', 'type': 'E' },
-      { 'source': 'Fray', 'target': 'Mauer', 'type': 'A' },
-      { 'source': 'Fray', 'target': 'Cynthia', 'type': 'A' },
-      { 'source': 'Fray', 'target': 'Percy', 'type': 'A' },
-      { 'source': 'Percy', 'target': 'Cynthia', 'type': 'A' },
-      { 'source': 'Infante', 'target': 'Duke', 'type': 'A' },
-      { 'source': 'Duke', 'target': 'Gordon', 'type': 'A' },
-      { 'source': 'Duke', 'target': 'Sylvester', 'type': 'A' },
-      { 'source': 'Baron', 'target': 'Duke', 'type': 'A' },
-      { 'source': 'Baron', 'target': 'Sylvester', 'type': 'E' },
-      { 'source': 'Evette', 'target': 'Sylvester', 'type': 'E' },
-      { 'source': 'Cynthia', 'target': 'Sylvester', 'type': 'E' },
-      { 'source': 'Cynthia', 'target': 'Jamie', 'type': 'E' },
-      { 'source': 'Mauer', 'target': 'Jessie', 'type': 'E' },
-      { 'source': 'Duke', 'target': 'Lexy', 'type': 'A' },
-      { 'source': 'Feyton', 'target': 'Lexy', 'type': 'A' },
-      { 'source': 'Maria', 'target': 'Feyton', 'type': 'A' },
-      { 'source': 'Baron', 'target': 'Yvette', 'type': 'E' },
-      { 'source': 'Evette', 'target': 'Maria', 'type': 'E' },
-      { 'source': 'Cynthia', 'target': 'Yvette', 'type': 'E' },
-      { 'source': 'Maria', 'target': 'Jamie', 'type': 'E' },
-      { 'source': 'Maria', 'target': 'Lesley', 'type': 'E' },
-      { 'source': 'Ashley', 'target': 'Damo', 'type': 'A' },
-      { 'source': 'Damo', 'target': 'Lexy', 'type': 'A' },
-      { 'source': 'Maria', 'target': 'Feyton', 'type': 'A' },
-      { 'source': 'Finkler', 'target': 'Ashley', 'type': 'E' },
-      { 'source': 'Sylvester', 'target': 'Maria', 'type': 'E' },
-      { 'source': 'Peter', 'target': 'Finkler', 'type': 'E' },
-      { 'source': 'Ashley', 'target': 'Gordon', 'type': 'E' },
-      { 'source': 'Maria', 'target': 'Imogen', 'type': 'E' }
-    ]
-    // set up the simulation and add forces
-    let simulation = d3.forceSimulation()
-      .nodes(nodesData)
-    let linkForce = d3.forceLink(linksData)
-      .id(function (d) { return d.name })
-    let chargeForce = d3.forceManyBody()
-      .strength(-100)
-    let centerForce = d3.forceCenter(width / 2, height / 2)
-    simulation
-      .force('chargeForce', chargeForce)
-      .force('centerForce', centerForce)
-      .force('links', linkForce)
-    // add tick instructions:
-    simulation.on('tick', tickActions)
-    // add encompassing group for the zoom
-    let g = svg.append('g')
-      .attr('class', 'everything')
-    // draw lines for the links
-    let link = g.append('g')
-      .attr('class', 'links')
+  async mounted () {
+    const width = document.querySelector('svg').clientWidth
+    const height = document.querySelector('svg').clientHeight
+
+    const res = await fetch(`data/kondoumh_graph.json`)
+    const json = await res.json()
+
+    let nodesData = json.pages.map(page =>
+    ({
+      id: page.id,
+      title: page.title,
+      x: width * Math.random(),
+      y: height * Math.random(),
+      rx: 70,
+      ry: 20,
+      user: false
+    }))
+
+    const users = json.users.map(user => ({
+      id: user.id,
+      title: user.name,
+      x: width * Math.random(),
+      y: height * Math.random(),
+      rx: 70,
+      ry: 20,
+      user: true
+    }))
+    nodesData = nodesData.concat(users)
+
+    let linksData = json.links.map(link =>
+    ({
+      source: nodesData.findIndex(node => node.id === link.from),
+      target: nodesData.findIndex(node => node.id === link.to),
+      l: Math.random() * 200 + 5 + 70 + 20
+    }))
+
+    const userPages = json.userPages.map(up =>
+    ({
+      source: nodesData.findIndex(node => node.id === up.user),
+      target: nodesData.findIndex(node => node.id === up.page),
+      l: Math.random() * 200 + 5 + 70 + 20
+    }))
+    linksData = linksData.concat(userPages)
+
+    const link = d3.select('svg')
       .selectAll('line')
       .data(linksData)
-      .enter().append('line')
+      .enter()
+      .append('line')
       .attr('stroke-width', 2)
-      .style('stroke', linkColour)
-    // draw circles for the nodes
-    let node = g.append('g')
-      .attr('class', 'nodes')
-      .selectAll('circle')
+      .attr('stroke', 'black')
+
+    const nodeGroup = d3.select('svg')
+      .selectAll('g')
       .data(nodesData)
       .enter()
-      .append('circle')
-      .attr('r', radius)
-      .attr('fill', circleColour)
-    let dragHandler = d3.drag()
-      .on('start', dragStart)
-      .on('drag', dragDrag)
-      .on('end', dragEnd)
-    dragHandler(node)
-    // add zoom capabilities
-    let zoomHandler = d3.zoom()
-      .on('zoom', zoomActions)
-    zoomHandler(svg)
-    /** Functions **/
-    // Function to choose what color circle we have
-    // Let's return blue for males and red for females
-    function circleColour (d) {
-      if (d.sex === 'M') {
-        return 'blue'
-      } else {
-        return 'pink'
-      }
+      .append('g')
+      .call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended))
+      .on('click', clicked)
+
+    nodeGroup.append('ellipse')
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('rx', d => d.rx)
+      .attr('ry', d => d.ry)
+      .attr('fill', d => d.user ? 'Green' : 'Gold')
+      .attr('stroke', 'black')
+
+    nodeGroup.append('text')
+      .attr('x', d => d.x)
+      .attr('y', d => d.y)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .style('fill', 'steelbule')
+      .text(d => d.title)
+
+    function clicked(d) {
+      d3.selectAll('.selected').classed('selected', false)
+      d3.selectAll('.conected').classed('conected', false)
+      d3.selectAll('line').classed('linkSelected', false)
+
+      d3.select(this).classed('selected', true)
+
+      d3.selectAll('line')
+        .filter((v) => {
+          if (d == v.source) {
+            nodeGroup.each(vj => {
+              if (v.target == vj) d3.select(this).classed('conected', true)
+            })
+            return true
+          } else if (d == v.target) {
+            nodeGroup.each(vj => {
+              if (v.source == vj) d3.select(this).classed('conected', true)
+            })
+            return true
+          }
+        }).classed('linkSelected', true)
     }
-    // Function to choose the line colour and thickness
-    // If the link type is 'A' return green
-    // If the link type is 'E' return red
-    function linkColour (d) {
-      if (d.type === 'A') {
-        return 'green'
-      } else {
-        return 'red'
-      }
+
+    const simulation = d3.forceSimulation()
+      .force('link',
+        d3.forceLink()
+          .distance(d => d.l)
+          .iterations(2))
+      .force('collide',
+        d3.forceCollide()
+          .radius(d => d.r)
+          .strength(0.7)
+          .iterations(2))
+      .force('charge', d3.forceManyBody().strength(-100))
+      .force('x', d3.forceX().strength(0.01).x(width / 2))
+      .force('y', d3.forceY().strength(0.01).y(height / 2))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+
+    simulation
+      .nodes(nodesData)
+      .on('tick', ticked)
+
+    simulation.force('link')
+      .links(linksData)
+      .id(d => d.index)
+
+    function ticked() {
+      link
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y)
+      nodeGroup.select('ellipse')
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+      nodeGroup.select('text')
+        .attr('x', d => d.x)
+        .attr('y', d => d.y)
     }
-    // Drag functions
-    // d is the node
-    function dragStart (d) {
+
+    function dragstarted(d) {
       if (!d3.event.active) simulation.alphaTarget(0.3).restart()
       d.fx = d.x
       d.fy = d.y
     }
-    // make sure you can't drag the circle outside the box
-    function dragDrag (d) {
+
+    function dragged(d) {
       d.fx = d3.event.x
       d.fy = d3.event.y
     }
-    function dragEnd (d) {
+
+    function dragended(d) {
       if (!d3.event.active) simulation.alphaTarget(0)
       d.fx = null
       d.fy = null
     }
-    // Zoom functions
-    function zoomActions () {
-      g.attr('transform', d3.event.transform)
+
+    d3.select('#resetButton')
+    .on('click', resetted)
+ 
+    const zoom = d3.zoom()
+      .scaleExtent([1/3, 40])
+      .on('zoom', zoomed)
+
+    link.call(zoom)
+    nodeGroup.call(zoom)
+  
+    function zoomed() {
+      link.attr('transform', d3.event.transform)
+      nodeGroup.attr('transform', d3.event.transform)
     }
-    function tickActions () {
-      // update circle positions each tick of the simulation
-      node
-        .attr('cx', function (d) { return d.x })
-        .attr('cy', function (d) { return d.y })
-      // update link positions
-      link
-        .attr('x1', function (d) { return d.source.x })
-        .attr('y1', function (d) { return d.source.y })
-        .attr('x2', function (d) { return d.target.x })
-        .attr('y2', function (d) { return d.target.y })
-    }
-  }
+  
+    function resetted() {
+      link.transition()
+        .duration(750)
+        .call(zoom.transform, d3.zoomIdentity)
+      nodeGroup.transition()
+        .duration(750)
+        .call(zoom.transform, d3.zoomIdentity)
+    }  }
 }
 </script>
 
 <style>
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
-}
-.nodes circle {
-  stroke: black;
-  stroke-width: 0px;
-}
+  .selected {
+    fill: tomato;
+  }
+
+  .linkSelected {
+    stroke: tomato;
+  }
+
+  .conected {
+    fill: orange;
+  }
+
+  .toolbox {
+    padding: 3px;
+    background-color:darkkhaki
+  }
+
+  html, body {
+    margin:0;
+    padding:0;
+    overflow:hidden
+  }
+
+  svg {
+    position:fixed;
+    top:30px;
+    left:0;
+    height:100%;
+    width:100%
+  }
 </style>
