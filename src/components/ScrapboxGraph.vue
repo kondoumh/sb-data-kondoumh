@@ -5,7 +5,7 @@
   >
     <svg id="svg"/>
     <v-toolbar collaspe>
-      <v-toolbar-title>kondoumh</v-toolbar-title>
+      <v-toolbar-title>{{ project }}</v-toolbar-title>
       <v-spacer/>
       <v-checkbox
         v-model="showAuthor"
@@ -13,6 +13,17 @@
         single-line
         hide-details
       ></v-checkbox>
+      <v-spacer/>
+      <v-radio-group
+        v-model="project"
+        :mandatory="true"
+        row
+        single-line
+        hide-details
+        >
+        <v-radio label="kondoumh" value="kondoumh"></v-radio>
+        <v-radio label="help-jp" value="help-jp"></v-radio>
+      </v-radio-group>
     </v-toolbar>
   </v-card>
 </template>
@@ -24,16 +35,16 @@ export default {
   name: 'graph',
   components: {
   },
-  data: () => {
-    return {
-      showAuthor: false
-    }
-  },
+  data: () => ({
+    showAuthor: false,
+    project: ''
+  }),
   async mounted () {
     await this.render()
   },
   watch: {
-    showAuthor: 'render'
+    showAuthor: 'render',
+    project: 'render'
   },
   methods: {
     async render() {
@@ -41,7 +52,7 @@ export default {
       const width = document.querySelector('svg').clientWidth
       const height = document.querySelector('svg').clientHeight
 
-      const res = await fetch(`data/kondoumh_graph.json`)
+      const res = await fetch(`data/${this.project}_graph.json`)
       const json = await res.json()
 
       let nodesData = json.pages.map(page =>
