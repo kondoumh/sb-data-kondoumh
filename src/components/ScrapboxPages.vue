@@ -90,7 +90,7 @@
     computed: {
       headers() {
         return [
-          { text: 'Pin', value: 'pin'},
+          { text: 'Pin', value: 'pin' },
           { 
             text: 'Views',
             value: 'views',
@@ -99,10 +99,18 @@
               return value > parseInt(this.views)
             }
           },
-          { text: 'Linked', value: 'linked'},
-          { text: 'Updated', value: 'updated'},
-          { text: 'Title', value: 'title', sortable: false },
-          { text: 'Image', value: 'image', sortable: false},
+          { text: 'Linked', value: 'linked', filter: () => { return true } },
+          { text: 'Updated', value: 'updated', filter: () => { return true } },
+          {
+            text: 'Title',
+            value: 'title',
+            sortable: false,
+            filter: value => {
+              if (!this.search) return true
+              return value.toString().toLowerCase().indexOf(this.search.toLowerCase()) !== -1
+            }
+          },
+          { text: 'Image', value: 'image', sortable: false },
         ]
       },
     },
