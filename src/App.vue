@@ -8,7 +8,8 @@
       <div id="nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/list">Full List</router-link> |
-        <a href="graph.html">Graph</a> |
+        <router-link to="/Graph">Graph</router-link> |
+        <a href="graph.html">Graph(HTML)</a> |
         <router-link to="/about">About</router-link>
       </div>
       <v-spacer></v-spacer>
