@@ -12,7 +12,7 @@
         <router-link to="/about">About</router-link>
       </div>
       <v-spacer></v-spacer>
-      <span>powered by <a href="https://github.com/mamezou-tech/sbgraph" target="_blank">sbgraph</a></span>
+      <span>Powered by <a href="https://github.com/mamezou-tech/sbgraph" target="_blank">sbgraph</a></span>
     </v-app-bar>
     <v-content>
       <router-view />
