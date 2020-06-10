@@ -7,6 +7,7 @@
       <v-list-item-content>
         <v-list-item-title class="headline mb-1">Scrapbox viz</v-list-item-title>
         <v-list-item-subtitle>PWA for listing Scrapbox pages and graph visualization.</v-list-item-subtitle>
+        <v-list-item-subtitle>&copy;2020 kondoumh</v-list-item-subtitle>
       </v-list-item-content>
       <img src="img/icons/msapplication-icon-144x144.png" width="80"/>
     </v-list-item>
