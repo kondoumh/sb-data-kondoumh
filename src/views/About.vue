@@ -12,7 +12,45 @@
     </v-list-item>
 
     <v-list shaped>
-      <v-subheader>Powered by</v-subheader>
+      <v-subheader>Hosted by</v-subheader>
+      <v-list-item
+        v-for="item in itemsHosted"
+        :key="item.text"
+        :href="item.url"
+        target="_blank"
+      >
+        <v-list-item-icon>
+          <v-icon v-text="item.icon"></v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title v-text="item.text"></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+
+    <v-divider></v-divider>
+
+    <v-list shaped>
+      <v-subheader>Build by</v-subheader>
+      <v-list-item
+        v-for="item in itemsBuild"
+        :key="item.text"
+        :href="item.url"
+        target="_blank"
+      >
+        <v-list-item-icon>
+          <v-icon v-text="item.icon"></v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title v-text="item.text"></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+
+    <v-divider></v-divider>
+
+    <v-list shaped>
+      <v-subheader>Constructed by</v-subheader>
       <v-list-item
         v-for="item in itemsOss"
         :key="item.text"
@@ -52,11 +90,17 @@
 <script>
   export default {
     data: () => ({
+      itemsHosted: [
+        { icon: 'mdi-web', text: 'Netlify', url: 'https://jp.vuejs.org' },
+      ],
+      itemsBuild: [
+        { icon: 'mdi-github-box', text: 'GitHub Actions', url: 'https://jp.vuejs.org' },
+      ],
       itemsOss: [
         { icon: 'mdi-language-javascript', text: 'Vue.js', url: 'https://jp.vuejs.org' },
         { icon: 'mdi-language-javascript', text: 'Vuetify', url: 'https://vuetifyjs.com' },
         { icon: 'mdi-language-javascript', text: 'D3.js', url: 'https://d3js.org' },
-        { icon: 'mdi-github-box', text: 'mamezou-tech/sbgraph', url: 'https://github.com/mamezou-tech/sbgraph' },
+        { icon: 'mdi-language-go', text: 'mamezou-tech/sbgraph', url: 'https://github.com/mamezou-tech/sbgraph' },
       ],
       itemsSite: [
         { icon: 'mdi-book-open-page-variant', text: 'kondoumh - Scrapbox', url: 'https://scrapbox.io/kondoumh' },
