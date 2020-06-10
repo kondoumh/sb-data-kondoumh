@@ -91,13 +91,13 @@
   export default {
     data: () => ({
       itemsHosted: [
-        { icon: 'mdi-web', text: 'Netlify', url: 'https://jp.vuejs.org' },
+        { icon: 'mdi-web', text: 'Netlify', url: 'https://www.netlify.com' },
       ],
       itemsBuild: [
-        { icon: 'mdi-github-box', text: 'GitHub Actions', url: 'https://jp.vuejs.org' },
+        { icon: 'mdi-github-box', text: 'GitHub Actions', url: 'https://github.com/features/actions' },
       ],
       itemsOss: [
-        { icon: 'mdi-language-javascript', text: 'Vue.js', url: 'https://jp.vuejs.org' },
+        { icon: 'mdi-language-javascript', text: 'Vue.js', url: 'https://vuejs.org' },
         { icon: 'mdi-language-javascript', text: 'Vuetify', url: 'https://vuetifyjs.com' },
         { icon: 'mdi-language-javascript', text: 'D3.js', url: 'https://d3js.org' },
         { icon: 'mdi-language-go', text: 'mamezou-tech/sbgraph', url: 'https://github.com/mamezou-tech/sbgraph' },
