@@ -4,7 +4,7 @@
     tile
   >
     <svg id="svg"/>
-    <v-toolbar dense floating>
+    <v-toolbar dense floating color="black">
       <v-radio-group
         v-model="project"
         :mandatory="true"
