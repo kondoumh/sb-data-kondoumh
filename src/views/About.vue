@@ -53,15 +53,14 @@
   export default {
     data: () => ({
       itemsOss: [
-        { icon: 'mdi-flag', text: 'Vue.js', url: 'https://jp.vuejs.org' },
-        { icon: 'mdi-flag', text: 'Vuetify', url: 'https://vuetifyjs.com' },
-        { icon: 'mdi-flag', text: 'D3.js', url: 'https://d3js.org' },
-        { icon: 'mdi-flag', text: 'mamezou-tech/sbgraph', url: 'https://github.com/mamezou-tech/sbgraph' },
+        { icon: 'mdi-language-javascript', text: 'Vue.js', url: 'https://jp.vuejs.org' },
+        { icon: 'mdi-language-javascript', text: 'Vuetify', url: 'https://vuetifyjs.com' },
+        { icon: 'mdi-language-javascript', text: 'D3.js', url: 'https://d3js.org' },
+        { icon: 'mdi-github-box', text: 'mamezou-tech/sbgraph', url: 'https://github.com/mamezou-tech/sbgraph' },
       ],
       itemsSite: [
-        { icon: 'mdi-clock', text: 'Scrapox', url: 'https://scrapbox.io' },
-        { icon: 'mdi-account', text: 'kondoumh - Scrapbox', url: 'https://scrapbox.io/kondoumh' },
-        { icon: 'mdi-account', text: 'help - Scrapbox', url: 'https://scrapbox.io/help-jp' },
+        { icon: 'mdi-book-open-page-variant', text: 'kondoumh - Scrapbox', url: 'https://scrapbox.io/kondoumh' },
+        { icon: 'mdi-book-open-page-variant', text: 'help - Scrapbox', url: 'https://scrapbox.io/help-jp' },
       ],
     }),
   }
