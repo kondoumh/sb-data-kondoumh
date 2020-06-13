@@ -99,17 +99,9 @@
               return value > parseInt(this.views)
             }
           },
-          { text: 'Linked', value: 'linked', filter: () => { return true } },
-          { text: 'Updated', value: 'updated', filter: () => { return true } },
-          {
-            text: 'Title',
-            value: 'title',
-            sortable: false,
-            filter: value => {
-              if (!this.search) return true
-              return value.toString().toLowerCase().indexOf(this.search.toLowerCase()) !== -1
-            }
-          },
+          { text: 'Linked', value: 'linked', filter: () => true },
+          { text: 'Updated', value: 'updated', filter: () => true },
+          { text: 'Title', value: 'title', sortable: false },
           { text: 'Image', value: 'image', sortable: false },
         ]
       },
