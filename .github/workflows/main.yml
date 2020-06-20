@@ -1,7 +1,9 @@
-name: sbgraph
+name: Build and publish
 
 on:
   push:
+    paths-ignore:
+      - README.md
 
 jobs:
 
