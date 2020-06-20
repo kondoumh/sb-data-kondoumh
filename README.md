@@ -1,5 +1,7 @@
 # sb-data-kondoumh
-Scrapbox data site repo
+![Build and publish](https://github.com/kondoumh/sb-data-kondoumh/workflows/Build%20and%20publish/badge.svg)
+
+PWA for listing Scrapbox pages and graph visualization.
 
 ## Project setup
 ```
