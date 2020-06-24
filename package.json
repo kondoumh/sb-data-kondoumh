@@ -27,7 +27,9 @@
     "d3": "^5.16.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "jest-puppeteer": "^4.4.0",
     "lint-staged": "^9.5.0",
+    "puppeteer": "^3.3.0",
     "vue-cli-plugin-vuetify": "^2.0.5",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.5.0"
