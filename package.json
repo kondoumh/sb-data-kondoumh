@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test": "jest -c jest.config.e2e.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -27,6 +28,8 @@
     "d3": "^5.16.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "jest": "^26.1.0",
+    "jest-cli": "^26.1.0",
     "jest-puppeteer": "^4.4.0",
     "lint-staged": "^9.5.0",
     "puppeteer": "^3.3.0",
