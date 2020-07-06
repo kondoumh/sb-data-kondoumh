@@ -15,5 +15,9 @@ describe('About', () =>{
       visible: true,
       text: 'Scrapbox viz'
     });
-  })
+    await expect(page).toMatchElement('#app > div > main > div > div > div:nth-child(2) > a', {
+      href: 'https://www.netlify.com',
+      text: 'Netlify'
+    });
+  });
 });
