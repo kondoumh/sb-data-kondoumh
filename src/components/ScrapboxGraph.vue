@@ -133,6 +133,8 @@ export default {
         .attr('dominant-baseline', 'middle')
         .style('fill', 'steelbule')
         .text(d => d.title)
+        .append('a')
+        .attr('xlink:href', d => 'https://scrapbox.io/' + this.project + '/' + d.title)
 
       function clicked(d) {
         d3.selectAll('.selected').classed('selected', false)
