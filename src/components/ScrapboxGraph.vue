@@ -134,7 +134,7 @@ export default {
         .style('fill', 'steelbule')
         .text(d => d.title)
         .append('a')
-        .attr('xlink:href', d => 'https://scrapbox.io/' + this.project + '/' + d.title)
+        .attr('xlink:href', d => `https://scrapbox.io/${this.project}/${d.title}`)
 
       function clicked(d) {
         d3.selectAll('.selected').classed('selected', false)
