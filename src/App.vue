@@ -7,7 +7,6 @@
       <v-spacer></v-spacer>
       <div id="nav">
         <router-link to="/">Home</router-link> |
-        <router-link to="/list">Full List</router-link> |
         <router-link to="/Graph">Graph</router-link> |
         <router-link to="/about">About</router-link>
       </div>
