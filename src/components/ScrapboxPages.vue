@@ -1,7 +1,13 @@
 <template>
   <v-card>
     <v-card-title>
-      {{ projectName }}
+      <v-select
+        v-model="sp"
+        :items="projects"
+        label="Project"
+        dense
+        @change="fetchData"
+      ></v-select>
       <v-spacer/>
       {{ updated }}
     </v-card-title>
@@ -47,7 +53,7 @@
       </template>
       <template v-slot:item.title="{ item }">
         <a
-        :href="'https://scrapbox.io/'+ projectName + '/' + encodeTitle(item.title)"
+        :href="'https://scrapbox.io/'+ sp + '/' + encodeTitle(item.title)"
         target="_blank">{{ item.title }}</a>    </template>
       <template v-slot:item.image="{ item }">
         <img :src="item.image" style="width: auto; height: 25px">
@@ -61,12 +67,9 @@
     async mounted () {
       this.fetchData()
     },
-    props: {
-      projectName: String
-    },
     methods: {
       async fetchData () {
-        const res = await fetch('data/' + this.projectName + '.json', {
+        const res = await fetch('data/' + this.sp + '.json', {
           mode: 'cors',
         })
         const json = await res.json()
@@ -107,6 +110,8 @@
       },
     },
     data: () => ({
+      projects: ["kondoumh", "help-jp"],
+      sp: 'kondoumh',
       search: '',
       views: '',
       updated: '',

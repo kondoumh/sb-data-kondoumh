@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <ScrapboxPages projectName="kondoumh"/>
+    <ScrapboxPages />
   </v-container>
 </template>
 
