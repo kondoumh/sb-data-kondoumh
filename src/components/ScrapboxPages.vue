@@ -29,7 +29,7 @@
       :search="search"
       :items-per-page="itemsPerPage"
       :footer-props="{
-        'items-per-page-options': [5, 10, 15, 20, 25, 30]
+        'items-per-page-options': [25, 50, 100]
       }"
       class="elevation-1"
     >
@@ -112,7 +112,7 @@
       updated: '',
       pages: [],
       types: ['pin', 'updated', 'title', 'images'],
-      itemsPerPage: 10,
+      itemsPerPage: 100,
     })
   }
 </script>
