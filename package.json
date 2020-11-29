@@ -4,12 +4,16 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "dev": "netlify-lambda serve resources/api",
+    "build": "vue-cli-service build && netlify-lambda build resources/api",
     "test": "jest -c jest.config.e2e.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.7.0",
+    "encoding": "^0.1.13",
+    "netlify-lambda": "^2.0.1",
+    "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
     "register-service-worker": "^1.7.1",
     "sass": "^1.29.0",
