@@ -69,8 +69,10 @@
     },
     methods: {
       async fetchData () {
-        const res = await fetch('data/' + this.sp + '.json', {
-          mode: 'cors',
+        const res = await fetch(".netlify/functions/sbpages", {
+          headers: {
+            "project": this.sp
+          }
         })
         const json = await res.json()
         this.pages = await json.pages
