@@ -54,7 +54,9 @@ export default {
       const width = document.querySelector('svg').clientWidth
       const height = document.querySelector('svg').clientHeight
 
-      const res = await fetch(`data/${this.project}_graph.json`)
+      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
+        mode: 'cors'
+      })
       const json = await res.json()
 
       let nodesData = json.pages.map(page =>
