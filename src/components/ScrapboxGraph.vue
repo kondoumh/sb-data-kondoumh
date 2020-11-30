@@ -83,7 +83,6 @@ export default {
         nodesData = nodesData.concat(users)
       }
 
-
       let linksData = json.links.map(link =>
       ({
         source: nodesData.findIndex(node => node.id === link.from),

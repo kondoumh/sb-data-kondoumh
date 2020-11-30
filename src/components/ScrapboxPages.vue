@@ -5,19 +5,16 @@
         v-model="sp"
         :items="projects"
         label="Project"
-        dense
         @change="fetchData"
       ></v-select>
       <v-spacer/>
-      {{ updated }}
-    </v-card-title>
-    <v-card-title>
       <v-text-field
         v-model="views"
         type="number"
         label="More than"
         single-line
         hide-details
+        dense
         >
       </v-text-field>
       <v-spacer/>
@@ -27,6 +24,7 @@
         label="Search"
         single-line
         hide-details
+        dense
       ></v-text-field>
     </v-card-title>
     <v-data-table
@@ -95,7 +93,7 @@
     computed: {
       headers() {
         return [
-          { text: 'Pin', value: 'pin' },
+          { text: 'Pin', value: 'pin', sortable: false },
           { 
             text: 'Views',
             value: 'views',
@@ -116,7 +114,6 @@
       sp: 'kondoumh',
       search: '',
       views: '',
-      updated: '',
       pages: [],
       types: ['pin', 'updated', 'title', 'images'],
       itemsPerPage: 100,
