@@ -8,6 +8,12 @@
         @change="fetchData"
       ></v-select>
       <v-spacer/>
+      <v-btn icon color="gray" @click="fetchData">
+        <v-icon>mdi-cached</v-icon>
+      </v-btn>
+      {{ updated }}
+    </v-card-title>
+    <v-card-title>
       <v-text-field
         v-model="views"
         type="number"
@@ -74,11 +80,15 @@
         })
         const json = await res.json()
         this.pages = await json.pages
-        this.updated = await json.date
+        this.updated = this.formatDate(json.timestamp, false)
       },
-      formatDate (timestamp) {
+      formatDate (timestamp, adjust=true) {
         let date = new Date()
-        date.setTime(timestamp * 1000)
+        if (adjust) {
+          date.setTime(timestamp * 1000)
+        } else {
+          date.setTime(timestamp)
+        }
         const params = {
           year: 'numeric', month: 'numeric', day: 'numeric',
           hour: 'numeric', minute: 'numeric', second: 'numeric',
@@ -112,6 +122,7 @@
     data: () => ({
       projects: ["kondoumh", "help-jp"],
       sp: 'kondoumh',
+      updated: '',
       search: '',
       views: '',
       pages: [],
