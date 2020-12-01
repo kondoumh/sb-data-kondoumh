@@ -1,6 +1,4 @@
-exports.handler = async (e, c) => {
-
-  console.log(c)
+exports.handler = async (e) => {
 
   const project = e.headers.project
   if (!project) {
@@ -14,6 +12,7 @@ exports.handler = async (e, c) => {
   const url = `https://scrapbox.io/api/pages/${project}`;
   const res = await fetch(url);
   const data = await res.json();
+  data.date = Date.now();
   if (res.status !== 200) {
     return {
       statusCode: res.status,
