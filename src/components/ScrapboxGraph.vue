@@ -4,7 +4,7 @@
     tile
   >
     <svg id="svg"/>
-    <v-toolbar dense floating color="purple">
+    <v-toolbar dense color="purple">
       <v-radio-group
         v-model="project"
         :mandatory="true"
@@ -22,10 +22,83 @@
       ></v-divider>
       <v-checkbox
         v-model="showAuthor"
-        label="Show author"
+        label="Author"
         single-line
         hide-details
       ></v-checkbox>
+      <v-divider
+        class="mx-4"
+        inset
+        vertical
+      ></v-divider>
+      <v-range-slider
+        v-model="linked.range"
+        :max="linked.max"
+        :min="linked.min"
+        hide-details
+        class="align-center"
+        label="linked"
+      >
+        <template v-slot:prepend>
+          <v-text-field
+            :value="linked.range[0]"
+            class="mt-0 pt-0"
+            hide-details
+            single-line
+            type="number"
+            style="width: 50px"
+            @change="$set(linked.range, 0, $event)"
+          ></v-text-field>
+        </template>
+        <template v-slot:append>
+          <v-text-field
+            :value="linked.range[1]"
+            class="mt-0 pt-0"
+            hide-details
+            single-line
+            type="number"
+            style="width: 50px"
+            @change="$set(linked.range, 1, $event)"
+          ></v-text-field>
+        </template>
+      </v-range-slider>
+      <v-divider
+        class="mx-4"
+        inset
+        vertical
+      ></v-divider>
+      <v-range-slider
+        v-model="views.range"
+        :max="views.max"
+        :min="views.min"
+        hide-details
+        class="align-center"
+        label="views"
+      >
+        <template v-slot:prepend>
+          <v-text-field
+            :value="views.range[0]"
+            class="mt-0 pt-0"
+            hide-details
+            single-line
+            type="number"
+            style="width: 50px"
+            @change="$set(views.range, 0, $event)"
+          ></v-text-field>
+        </template>
+        <template v-slot:append>
+          <v-text-field
+            :value="views.range[1]"
+            class="mt-0 pt-0"
+            hide-details
+            single-line
+            type="number"
+            style="width: 50px"
+            @change="$set(views.range, 1, $event)"
+          ></v-text-field>
+        </template>
+      </v-range-slider>
+
     </v-toolbar>
   </v-card>
 </template>
@@ -39,7 +112,19 @@ export default {
   },
   data: () => ({
     showAuthor: false,
-    project: ''
+    project: '',
+    linked: {
+      min: -50,
+      max: 90,
+      slider: 40,
+      range: [-20, 70],
+    },
+    views: {
+      min: -50,
+      max: 90,
+      slider: 40,
+      range: [-20, 70],
+    }
   }),
   async mounted () {
     await this.render()
