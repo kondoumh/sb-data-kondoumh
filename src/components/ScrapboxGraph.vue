@@ -4,7 +4,7 @@
     tile
   >
     <svg id="svg"/>
-    <v-toolbar dense color="purple">
+    <v-toolbar dense width="400">
       <v-radio-group
         v-model="project"
         :mandatory="true"
@@ -26,76 +26,40 @@
         single-line
         hide-details
       ></v-checkbox>
-      <v-divider
-        class="mx-4"
-        inset
-        vertical
-      ></v-divider>
+    </v-toolbar>
+    <v-toolbar width="400">
       <v-range-slider
         v-model="linked.range"
         :max="linked.max"
         :min="linked.min"
         hide-details
-        class="align-center"
         label="linked"
+        thumb-label="sliding"
+        @end="onLinkedRange"
       >
         <template v-slot:prepend>
-          <v-text-field
-            :value="linked.range[0]"
-            class="mt-0 pt-0"
-            hide-details
-            single-line
-            type="number"
-            style="width: 50px"
-            @change="$set(linked.range, 0, $event)"
-          ></v-text-field>
+          <v-chip>{{ linked.range[0] }}</v-chip>
         </template>
         <template v-slot:append>
-          <v-text-field
-            :value="linked.range[1]"
-            class="mt-0 pt-0"
-            hide-details
-            single-line
-            type="number"
-            style="width: 50px"
-            @change="$set(linked.range, 1, $event)"
-          ></v-text-field>
+          <v-chip>{{ linked.range[1] }}</v-chip>
         </template>
       </v-range-slider>
-      <v-divider
-        class="mx-4"
-        inset
-        vertical
-      ></v-divider>
+    </v-toolbar>
+    <v-toolbar width="400">
       <v-range-slider
         v-model="views.range"
         :max="views.max"
         :min="views.min"
         hide-details
-        class="align-center"
+        thumb-label="sliding"
         label="views"
+        @end="onViewRange"
       >
         <template v-slot:prepend>
-          <v-text-field
-            :value="views.range[0]"
-            class="mt-0 pt-0"
-            hide-details
-            single-line
-            type="number"
-            style="width: 50px"
-            @change="$set(views.range, 0, $event)"
-          ></v-text-field>
+          <v-chip>{{ views.range[0] }}</v-chip>
         </template>
         <template v-slot:append>
-          <v-text-field
-            :value="views.range[1]"
-            class="mt-0 pt-0"
-            hide-details
-            single-line
-            type="number"
-            style="width: 50px"
-            @change="$set(views.range, 1, $event)"
-          ></v-text-field>
+          <v-chip>{{ views.range[1] }}</v-chip>
         </template>
       </v-range-slider>
 
@@ -114,16 +78,16 @@ export default {
     showAuthor: false,
     project: '',
     linked: {
-      min: -50,
-      max: 90,
+      min: 0,
+      max: 100,
       slider: 40,
-      range: [-20, 70],
+      range: [0, 100],
     },
     views: {
-      min: -50,
-      max: 90,
+      min: 0,
+      max: 1000,
       slider: 40,
-      range: [-20, 70],
+      range: [0, 1000],
     }
   }),
   async mounted () {
@@ -134,6 +98,12 @@ export default {
     project: 'render'
   },
   methods: {
+    onViewRange(range) {
+      console.log(range[0], range[1])
+    },
+    onLinkedRange(range) {
+      console.log(range[0], range[1])
+    },
     async render() {
       d3.select('svg').selectAll('*').remove()
       const width = document.querySelector('svg').clientWidth
