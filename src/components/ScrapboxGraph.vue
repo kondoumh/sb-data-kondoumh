@@ -72,58 +72,11 @@ import * as d3 from 'd3'
 
 export default {
   name: 'graph',
-  components: {
-  },
-  data: () => ({
-    graphData: undefined,
-    nodes: undefined,
-    edges: undefined,
-    showAuthor: false,
-    project: 'kondoumh',
-    linked: {
-      min: 0,
-      max: 100,
-      slider: 40,
-      range: [0, 100],
-    },
-    views: {
-      min: 0,
-      max: 1000,
-      slider: 40,
-      range: [0, 1000],
-    }
-  }),
-  async mounted () {
-    await this.fetchData()
-    this.filterNodes()
-    await this.render()
-  },
-  watch: {
-    showAuthor: {
-      handler: async function() {
-        this.filterNodes()
-        await this.render()
-      }
-    },
-    project: {
-      handler: async function() {
-        await this.fetchData()
-        this.filterNodes()
-        await this.render()
-      }
-    }
-  },
-  methods: {
-    async fetchData() {
-      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
-        mode: 'cors'
-      })
-      this.graphData = await res.json()
-    },
-    filterNodes() {
+  computed: {
+    nodes() {
       const width = document.querySelector('svg').clientWidth
       const height = document.querySelector('svg').clientHeight
-      this.nodes = this.graphData.pages.map(page =>
+      let nodes = this.graphData.pages.map(page =>
       ({
         id: page.id,
         title: page.title,
@@ -144,10 +97,12 @@ export default {
           ry: 20,
           user: true
         }))
-        this.nodes = this.nodes.concat(users)
+        nodes = nodes.concat(users)
       }
-
-      this.edges = this.graphData.links.map(link =>
+      return nodes
+    },
+    edges() {
+      let edges = this.graphData.links.map(link =>
       ({
         source: this.nodes.findIndex(node => node.id === link.from),
         target: this.nodes.findIndex(node => node.id === link.to),
@@ -161,8 +116,51 @@ export default {
           target: this.nodes.findIndex(node => node.id === up.page),
           l: Math.random() * 200 + 5 + 70 + 20
         }))
-        this.edges = this.edges.concat(userPages)
+        edges = edges.concat(userPages)
       }
+      return edges
+    }
+  },
+  data: () => ({
+    graphData: undefined,
+    showAuthor: false,
+    project: 'kondoumh',
+    linked: {
+      min: 0,
+      max: 100,
+      slider: 40,
+      range: [0, 100],
+    },
+    views: {
+      min: 0,
+      max: 1000,
+      slider: 40,
+      range: [0, 1000],
+    }
+  }),
+  async mounted () {
+    await this.fetchData()
+    await this.render()
+  },
+  watch: {
+    showAuthor: {
+      handler: async function() {
+        await this.render()
+      }
+    },
+    project: {
+      handler: async function() {
+        await this.fetchData()
+        await this.render()
+      }
+    }
+  },
+  methods: {
+    async fetchData() {
+      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
+        mode: 'cors'
+      })
+      this.graphData = await res.json()
     },
     onViewRange(range) {
       console.log(range[0], range[1])
