@@ -75,7 +75,8 @@ export default {
   components: {
   },
   data: () => ({
-    graphData: undefined,
+    nodes: undefined,
+    edges: undefined,
     showAuthor: false,
     project: 'kondoumh',
     linked: {
@@ -96,7 +97,12 @@ export default {
     await this.render()
   },
   watch: {
-    showAuthor: 'render',
+    showAuthor: {
+      handler: async function() {
+        await this.fetchData()
+        await this.render()
+      }
+    },
     project: {
       handler: async function() {
         await this.fetchData()
@@ -110,19 +116,9 @@ export default {
         mode: 'cors'
       })
       this.graphData = await res.json()
-    },
-    onViewRange(range) {
-      console.log(range[0], range[1])
-    },
-    onLinkedRange(range) {
-      console.log(range[0], range[1])
-    },
-    async render() {
-      d3.select('svg').selectAll('*').remove()
       const width = document.querySelector('svg').clientWidth
       const height = document.querySelector('svg').clientHeight
-
-      let nodesData = this.graphData.pages.map(page =>
+      this.nodes = this.graphData.pages.map(page =>
       ({
         id: page.id,
         title: page.title,
@@ -143,29 +139,39 @@ export default {
           ry: 20,
           user: true
         }))
-        nodesData = nodesData.concat(users)
+        this.nodes = this.nodes.concat(users)
       }
 
-      let linksData = this.graphData.links.map(link =>
+      this.edges = this.graphData.links.map(link =>
       ({
-        source: nodesData.findIndex(node => node.id === link.from),
-        target: nodesData.findIndex(node => node.id === link.to),
+        source: this.nodes.findIndex(node => node.id === link.from),
+        target: this.nodes.findIndex(node => node.id === link.to),
         l: Math.random() * 200 + 5 + 70 + 20
       }))
 
       if (this.showAuthor) {
         const userPages = this.graphData.userPages.map(up =>
         ({
-          source: nodesData.findIndex(node => node.id === up.user),
-          target: nodesData.findIndex(node => node.id === up.page),
+          source: this.nodes.findIndex(node => node.id === up.user),
+          target: this.nodes.findIndex(node => node.id === up.page),
           l: Math.random() * 200 + 5 + 70 + 20
         }))
-        linksData = linksData.concat(userPages)
+        this.edges = this.edges.concat(userPages)
       }
-
+    },
+    onViewRange(range) {
+      console.log(range[0], range[1])
+    },
+    onLinkedRange(range) {
+      console.log(range[0], range[1])
+    },
+    async render() {
+      const width = document.querySelector('svg').clientWidth
+      const height = document.querySelector('svg').clientHeight
+      d3.select('svg').selectAll('*').remove()
       const link = d3.select('svg')
         .selectAll('line')
-        .data(linksData)
+        .data(this.edges)
         .enter()
         .append('line')
         .attr('stroke-width', 2)
@@ -173,7 +179,7 @@ export default {
 
       const nodeGroup = d3.select('svg')
         .selectAll('g')
-        .data(nodesData)
+        .data(this.nodes)
         .enter()
         .append('g')
         .call(d3.drag()
@@ -239,11 +245,11 @@ export default {
         .force('center', d3.forceCenter(width / 2, height / 2))
 
       simulation
-        .nodes(nodesData)
+        .nodes(this.nodes)
         .on('tick', ticked)
 
       simulation.force('link')
-        .links(linksData)
+        .links(this.edges)
         .id(d => d.index)
 
       function ticked() {
