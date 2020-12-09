@@ -34,7 +34,7 @@
         :min="linked.min"
         hide-details
         label="linked"
-        thumb-label="sliding"
+        thumb-label
         @end="onLinkedRange"
       >
         <template v-slot:prepend>
@@ -51,8 +51,8 @@
         :max="views.max"
         :min="views.min"
         hide-details
-        thumb-label="sliding"
         label="views"
+        thumb-label
         @end="onViewRange"
       >
         <template v-slot:prepend>
@@ -76,7 +76,7 @@ export default {
   },
   data: () => ({
     showAuthor: false,
-    project: '',
+    project: 'kondoumh',
     linked: {
       min: 0,
       max: 100,
