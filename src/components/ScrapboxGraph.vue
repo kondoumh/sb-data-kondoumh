@@ -74,14 +74,12 @@ export default {
   name: 'graph',
   computed: {
     nodes() {
-      const width = document.querySelector('svg').clientWidth
-      const height = document.querySelector('svg').clientHeight
       let nodes = this.graphData.pages.map(page =>
       ({
         id: page.id,
         title: page.title,
-        x: width * Math.random(),
-        y: height * Math.random(),
+        x: this.width * Math.random(),
+        y: this.height * Math.random(),
         rx: 70,
         ry: 20,
         user: false
@@ -91,8 +89,8 @@ export default {
         const users = this.graphData.users.map(user => ({
           id: user.id,
           title: user.name,
-          x: width * Math.random(),
-          y: height * Math.random(),
+          x: this.width * Math.random(),
+          y: this.height * Math.random(),
           rx: 70,
           ry: 20,
           user: true
@@ -122,9 +120,11 @@ export default {
     }
   },
   data: () => ({
-    graphData: undefined,
+    graphData: [],
     showAuthor: false,
     project: 'kondoumh',
+    width: 0,
+    height: 0,
     linked: {
       min: 0,
       max: 100,
@@ -139,6 +139,8 @@ export default {
     }
   }),
   async mounted () {
+    this.width = document.querySelector('svg').clientWidth
+    this.height = document.querySelector('svg').clientHeight
     await this.fetchData()
     await this.render()
   },
@@ -169,8 +171,6 @@ export default {
       console.log(range[0], range[1])
     },
     async render() {
-      const width = document.querySelector('svg').clientWidth
-      const height = document.querySelector('svg').clientHeight
       d3.select('svg').selectAll('*').remove()
       const link = d3.select('svg')
         .selectAll('line')
@@ -243,9 +243,9 @@ export default {
             .strength(0.7)
             .iterations(2))
         .force('charge', d3.forceManyBody().strength(-100))
-        .force('x', d3.forceX().strength(0.01).x(width / 2))
-        .force('y', d3.forceY().strength(0.01).y(height / 2))
-        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('x', d3.forceX().strength(0.01).x(this.width / 2))
+        .force('y', d3.forceY().strength(0.01).y(this.height / 2))
+        .force('center', d3.forceCenter(this.width / 2, this.height / 2))
 
       simulation
         .nodes(this.nodes)
