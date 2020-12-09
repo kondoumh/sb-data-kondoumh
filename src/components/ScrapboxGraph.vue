@@ -75,6 +75,7 @@ export default {
   components: {
   },
   data: () => ({
+    graphData: undefined,
     nodes: undefined,
     edges: undefined,
     showAuthor: false,
@@ -94,18 +95,20 @@ export default {
   }),
   async mounted () {
     await this.fetchData()
+    this.filterNodes()
     await this.render()
   },
   watch: {
     showAuthor: {
       handler: async function() {
-        await this.fetchData()
+        this.filterNodes()
         await this.render()
       }
     },
     project: {
       handler: async function() {
         await this.fetchData()
+        this.filterNodes()
         await this.render()
       }
     }
@@ -116,6 +119,8 @@ export default {
         mode: 'cors'
       })
       this.graphData = await res.json()
+    },
+    filterNodes() {
       const width = document.querySelector('svg').clientWidth
       const height = document.querySelector('svg').clientHeight
       this.nodes = this.graphData.pages.map(page =>
