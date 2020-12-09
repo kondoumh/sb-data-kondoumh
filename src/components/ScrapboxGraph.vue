@@ -75,6 +75,7 @@ export default {
   components: {
   },
   data: () => ({
+    graphData: undefined,
     showAuthor: false,
     project: 'kondoumh',
     linked: {
@@ -91,13 +92,25 @@ export default {
     }
   }),
   async mounted () {
+    await this.fetchData()
     await this.render()
   },
   watch: {
     showAuthor: 'render',
-    project: 'render'
+    project: {
+      handler: async function() {
+        await this.fetchData()
+        await this.render()
+      }
+    }
   },
   methods: {
+    async fetchData() {
+      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
+        mode: 'cors'
+      })
+      this.graphData = await res.json()
+    },
     onViewRange(range) {
       console.log(range[0], range[1])
     },
@@ -109,12 +122,7 @@ export default {
       const width = document.querySelector('svg').clientWidth
       const height = document.querySelector('svg').clientHeight
 
-      const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
-        mode: 'cors'
-      })
-      const json = await res.json()
-
-      let nodesData = json.pages.map(page =>
+      let nodesData = this.graphData.pages.map(page =>
       ({
         id: page.id,
         title: page.title,
@@ -126,7 +134,7 @@ export default {
       }))
 
       if (this.showAuthor) {
-        const users = json.users.map(user => ({
+        const users = this.graphData.users.map(user => ({
           id: user.id,
           title: user.name,
           x: width * Math.random(),
@@ -138,7 +146,7 @@ export default {
         nodesData = nodesData.concat(users)
       }
 
-      let linksData = json.links.map(link =>
+      let linksData = this.graphData.links.map(link =>
       ({
         source: nodesData.findIndex(node => node.id === link.from),
         target: nodesData.findIndex(node => node.id === link.to),
@@ -146,7 +154,7 @@ export default {
       }))
 
       if (this.showAuthor) {
-        const userPages = json.userPages.map(up =>
+        const userPages = this.graphData.userPages.map(up =>
         ({
           source: nodesData.findIndex(node => node.id === up.user),
           target: nodesData.findIndex(node => node.id === up.page),
