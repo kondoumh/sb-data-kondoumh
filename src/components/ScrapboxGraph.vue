@@ -74,7 +74,14 @@ export default {
   name: 'graph',
   computed: {
     nodes() {
-      let nodes = this.graphData.pages.map(page =>
+      let nodes = this.graphData.pages
+      .filter(page => {
+        return page.views >= this.views.range[0]
+        // && page.views <= this.views.range[1]
+        && page.linked >= this.linked.range[0]
+        // && page.linked <= this.linked.range[1]
+      })
+      .map(page =>
       ({
         id: page.id,
         title: page.title,
@@ -100,15 +107,26 @@ export default {
       return nodes
     },
     edges() {
-      let edges = this.graphData.links.map(link =>
+      let edges = this.graphData.links
+      .filter(edge => {
+         return (this.nodes.findIndex(node => node.id === edge.from) !== -1 &&
+         this.nodes.findIndex(node => node.id === edge.to) !== -1)
+      })
+      .map(edge =>
       ({
-        source: this.nodes.findIndex(node => node.id === link.from),
-        target: this.nodes.findIndex(node => node.id === link.to),
+        source: this.nodes.findIndex(node => node.id === edge.from),
+        target: this.nodes.findIndex(node => node.id === edge.to),
         l: Math.random() * 200 + 5 + 70 + 20
       }))
 
       if (this.showAuthor) {
-        const userPages = this.graphData.userPages.map(up =>
+        const userPages = this.graphData.userPages
+        .filter(up => {
+           return (
+           this.nodes.findIndex(node => node.id === up.user) !== -1 &&
+           this.nodes.findIndex(node => node.id === up.page) !== -1)
+        })
+        .map(up =>
         ({
           source: this.nodes.findIndex(node => node.id === up.user),
           target: this.nodes.findIndex(node => node.id === up.page),
@@ -121,8 +139,8 @@ export default {
   },
   data: () => ({
     graphData: [],
-    showAuthor: false,
-    project: 'kondoumh',
+    showAuthor: true,
+    project: 'help-jp',
     width: 0,
     height: 0,
     linked: {
@@ -133,9 +151,9 @@ export default {
     },
     views: {
       min: 0,
-      max: 1000,
+      max: 10000,
       slider: 40,
-      range: [0, 1000],
+      range: [0, 10000],
     }
   }),
   async mounted () {
@@ -145,17 +163,15 @@ export default {
     await this.render()
   },
   watch: {
-    showAuthor: {
-      handler: async function() {
-        await this.render()
-      }
-    },
+    showAuthor: 'render',
     project: {
       handler: async function() {
         await this.fetchData()
         await this.render()
       }
-    }
+    },
+    'views.range': 'render',
+    'linked.range': 'render'
   },
   methods: {
     async fetchData() {
@@ -164,7 +180,7 @@ export default {
       })
       this.graphData = await res.json()
     },
-    onViewRange(range) {
+    async onViewRange(range) {
       console.log(range[0], range[1])
     },
     onLinkedRange(range) {
