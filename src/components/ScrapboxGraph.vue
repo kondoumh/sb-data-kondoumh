@@ -35,7 +35,6 @@
         hide-details
         label="linked"
         thumb-label
-        @end="onLinkedRange"
       >
         <template v-slot:prepend>
           <v-chip>{{ linked.range[0] }}</v-chip>
@@ -53,7 +52,6 @@
         hide-details
         label="views"
         thumb-label
-        @end="onViewRange"
       >
         <template v-slot:prepend>
           <v-chip>{{ views.range[0] }}</v-chip>
@@ -77,9 +75,9 @@ export default {
       let nodes = this.graphData.pages
       .filter(page => {
         return page.views >= this.views.range[0]
-        // && page.views <= this.views.range[1]
-        && page.linked >= this.linked.range[0]
-        // && page.linked <= this.linked.range[1]
+          && page.views <= this.views.range[1]
+          && page.linked >= this.linked.range[0]
+          && page.linked <= this.linked.range[1]
       })
       .map(page =>
       ({
@@ -145,15 +143,13 @@ export default {
     height: 0,
     linked: {
       min: 0,
-      max: 100,
-      slider: 40,
-      range: [0, 100],
+      max: 10000,
+      range: [0, 10000],
     },
     views: {
       min: 0,
-      max: 10000,
-      slider: 40,
-      range: [0, 10000],
+      max: 500000,
+      range: [0, 500000],
     }
   }),
   async mounted () {
@@ -179,12 +175,16 @@ export default {
         mode: 'cors'
       })
       this.graphData = await res.json()
-    },
-    async onViewRange(range) {
-      console.log(range[0], range[1])
-    },
-    onLinkedRange(range) {
-      console.log(range[0], range[1])
+      const viewsMax = Math.max.apply(Math, this.graphData.pages.map(page => page.views))
+      const linkedMax = Math.max.apply(Math, this.graphData.pages.map(page => page.linked))
+      this.views.range[0] = 0
+      this.views.range[1] = viewsMax
+      this.linked.range[0] = 0
+      this.linked.range[1] = linkedMax
+      this.views.max = viewsMax
+      this.linked.max = linkedMax
+      this.views.min = 0
+      this.linked.min = 0
     },
     async render() {
       d3.select('svg').selectAll('*').remove()
