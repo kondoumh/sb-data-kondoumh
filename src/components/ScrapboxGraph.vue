@@ -105,31 +105,27 @@ export default {
       return nodes
     },
     edges() {
+      const ids = new Set(this.nodes.map(node => node.id))
+      const idm = new Map()
+      this.nodes.forEach((node, index) => {idm[node.id] = index})
       let edges = this.graphData.links
-      .filter(edge => {
-         return (this.nodes.findIndex(node => node.id === edge.from) !== -1 &&
-         this.nodes.findIndex(node => node.id === edge.to) !== -1)
-      })
-      .map(edge =>
-      ({
-        source: this.nodes.findIndex(node => node.id === edge.from),
-        target: this.nodes.findIndex(node => node.id === edge.to),
-        l: Math.random() * 200 + 5 + 70 + 20
-      }))
+        .filter(edge => ids.has(edge.from) && ids.has(edge.to))
+        .map(edge =>
+        ({
+          source: idm[edge.from],
+          target: idm[edge.to],
+          l: Math.random() * 200 + 5 + 70 + 20
+        }))
 
       if (this.showAuthor) {
         const userPages = this.graphData.userPages
-        .filter(up => {
-           return (
-           this.nodes.findIndex(node => node.id === up.user) !== -1 &&
-           this.nodes.findIndex(node => node.id === up.page) !== -1)
-        })
-        .map(up =>
-        ({
-          source: this.nodes.findIndex(node => node.id === up.user),
-          target: this.nodes.findIndex(node => node.id === up.page),
-          l: Math.random() * 200 + 5 + 70 + 20
-        }))
+          .filter(up => ids.has(up.user) && ids.has(up.page))
+          .map(up =>
+          ({
+            source: idm[up.user],
+            target: idm[up.page],
+            l: Math.random() * 200 + 5 + 70 + 20
+          }))
         edges = edges.concat(userPages)
       }
       return edges
@@ -171,12 +167,16 @@ export default {
   },
   methods: {
     async fetchData() {
+      this.resetRanges(500000, 10000)
       const res = await fetch(`https://sb-graph-kondoumh.netlify.app/${this.project}_graph.json`, {
         mode: 'cors'
       })
       this.graphData = await res.json()
       const viewsMax = Math.max.apply(Math, this.graphData.pages.map(page => page.views))
       const linkedMax = Math.max.apply(Math, this.graphData.pages.map(page => page.linked))
+      this.resetRanges(viewsMax, linkedMax)
+    },
+    resetRanges(viewsMax, linkedMax) {
       this.views.range[0] = 0
       this.views.range[1] = viewsMax
       this.linked.range[0] = 0
