@@ -8,8 +8,12 @@ exports.handler = async (e) => {
     };
   }
 
+  const skip = e.headers.skip ? e.headers.skip : 0;
+  const limit = e.headers.limit ? e.headers.limit : 100;
+  const sortBy = e.headers.sortby ? e.headers.sortby : "updated";
+
   const fetch = require("node-fetch").default;
-  const url = `https://scrapbox.io/api/pages/${project}`;
+  const url = `https://scrapbox.io/api/pages/${project}?skip=${skip}&limit=${limit}&sort=${sortBy}`;
   const res = await fetch(url);
   const data = await res.json();
   data.timestamp = Date.now();
