@@ -13,33 +13,16 @@
       </v-btn>
       {{ updated }}
     </v-card-title>
-    <v-card-title>
-      <v-text-field
-        v-model="views"
-        type="number"
-        label="More than"
-        single-line
-        hide-details
-        dense
-        >
-      </v-text-field>
-      <v-spacer/>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-        dense
-      ></v-text-field>
-    </v-card-title>
     <v-data-table
       :headers="headers"
       :items="pages"
-      :search="search"
-      :items-per-page="itemsPerPage"
+      :options.sync="options"
+      :server-items-length="pageCount"
+      :page.sync="page"
+      :items-per-page="options.itemsPerPage"
+      :sort-desc="[false, false, false]"
       :footer-props="{
-        'items-per-page-options': [25, 50, 100]
+        'items-per-page-options': [20, 25, 50, 100]
       }"
       class="elevation-1"
     >
@@ -73,13 +56,19 @@
     },
     methods: {
       async fetchData () {
+        const { sortBy, page, itemsPerPage } = this.options
+        const skip = (page - 1) * itemsPerPage
         const res = await fetch(".netlify/functions/sbpages", {
           headers: {
-            "project": this.sp
+            "project": this.sp,
+            "sortby": sortBy[0],
+            "skip": skip,
+            "limit": itemsPerPage,
           }
         })
         const json = await res.json()
         this.pages = await json.pages
+        this.pageCount = json.count
         this.updated = this.formatDate(json.timestamp, false)
       },
       formatDate (timestamp, adjust=true) {
@@ -100,34 +89,35 @@
         return encodeURIComponent(title)
       },
     },
-    computed: {
-      headers() {
-        return [
-          { text: 'Pin', value: 'pin', sortable: false },
-          { 
-            text: 'Views',
-            value: 'views',
-            filter: value => {
-              if (!this.views) return true
-              return value > parseInt(this.views)
-            }
-          },
-          { text: 'Linked', value: 'linked', filter: () => true },
-          { text: 'Updated', value: 'updated', filter: () => true },
-          { text: 'Title', value: 'title', sortable: false },
-          { text: 'Image', value: 'image', sortable: false },
-        ]
-      },
+    watch: {
+      options: {
+        handler () {
+          this.fetchData()
+        },
+        deep: true
+      }
     },
     data: () => ({
-      projects: ["kondoumh", "help-jp"],
       sp: 'kondoumh',
-      updated: '',
-      search: '',
-      views: '',
+      projects: ["kondoumh", "help-jp"],
+      page: 1,
+      pageCount: 0,
+      length: 1,
       pages: [],
-      types: ['pin', 'updated', 'title', 'images'],
-      itemsPerPage: 100,
+      projectName: '',
+      options: {
+        itemsPerPage: 100,
+        sortBy: ["updated"]
+      },
+      updated: '',
+      headers: [
+        { text: 'pin', value: 'pin', sortable: false, width: '25px' },
+        { text: 'views', value: 'views', width: '50px' },
+        { text: 'linked', value: 'linked', width: '50px' },
+        { text: 'updated', value: 'updated', width: '50px' },
+        { text: 'title', value: 'title', sortable: false, width: '150px'},
+        { text: 'image', value: 'image', sortable: false, width: '350px' }
+      ]
     })
   }
 </script>
