@@ -85,8 +85,8 @@ export default {
         title: page.title,
         x: this.width * Math.random(),
         y: this.height * Math.random(),
-        rx: 70,
-        ry: 20,
+        rx: page.title.length * 3 + 10,
+        ry: 12,
         user: false
       }))
 
@@ -96,8 +96,8 @@ export default {
           title: user.name,
           x: this.width * Math.random(),
           y: this.height * Math.random(),
-          rx: 70,
-          ry: 20,
+          rx: 30,
+          ry: 12,
           user: true
         }))
         nodes = nodes.concat(users)
@@ -221,6 +221,7 @@ export default {
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .style('fill', 'steelbule')
+        .style('font-size', '11px')
         .text(d => d.title)
         .append('a')
         .attr('xlink:href', d => `https://scrapbox.io/${this.project}/${d.title}`)
