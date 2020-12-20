@@ -133,8 +133,8 @@ export default {
   },
   data: () => ({
     graphData: [],
-    showAuthor: true,
-    project: 'help-jp',
+    showAuthor: false,
+    project: 'kondoumh',
     width: 0,
     height: 0,
     linked: {
