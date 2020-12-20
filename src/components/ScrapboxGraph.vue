@@ -114,7 +114,7 @@ export default {
         ({
           source: idm[edge.from],
           target: idm[edge.to],
-          l: Math.random() * 200 + 5 + 70 + 20
+          l: Math.random() * 150
         }))
 
       if (this.showAuthor) {
@@ -124,7 +124,7 @@ export default {
           ({
             source: idm[up.user],
             target: idm[up.page],
-            l: Math.random() * 200 + 5 + 70 + 20
+            l: Math.random() * 300
           }))
         edges = edges.concat(userPages)
       }
@@ -193,8 +193,8 @@ export default {
         .data(this.edges)
         .enter()
         .append('line')
-        .attr('stroke-width', 2)
-        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
+        .attr('stroke', 'LightGray')
 
       const nodeGroup = d3.select('svg')
         .selectAll('g')
@@ -212,8 +212,7 @@ export default {
         .attr('cy', d => d.y)
         .attr('rx', d => d.rx)
         .attr('ry', d => d.ry)
-        .attr('fill', d => d.user ? 'Green' : 'Gold')
-        .attr('stroke', 'black')
+        .attr('fill', d => d.user ? 'Cyan' : 'Gold')
 
       nodeGroup.append('text')
         .attr('x', d => d.x)
