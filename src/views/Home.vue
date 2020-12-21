@@ -1,16 +1,16 @@
 <template>
   <v-container>
-    <ScrapboxPages />
+    <Table />
   </v-container>
 </template>
 
 <script>
-import ScrapboxPages from '@/components/ScrapboxPages'
+import Table from '@/components/Table'
 
 export default {
   name: 'Home',
   components: {
-    ScrapboxPages
+    Table
   }
 }
 </script>

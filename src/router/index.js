@@ -11,9 +11,9 @@ Vue.use(VueRouter)
     component: Home
   },
   {
-    path: '/graph',
-    name: 'Graph',
-    component: () => import('../views/Graph.vue')
+    path: '/viz',
+    name: 'Viz',
+    component: () => import('../views/Viz.vue')
   },
   {
     path: '/about',
