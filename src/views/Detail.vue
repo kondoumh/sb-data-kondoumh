@@ -1,16 +1,16 @@
 <template>
   <v-container>
-    <List />
+    <Table />
   </v-container>
 </template>
 
 <script>
-import List from '@/components/List'
+import Table from '@/components/Table'
 
 export default {
-  name: 'Home',
+  name: 'Detail',
   components: {
-    List
+    Table
   }
 }
 </script>
