@@ -3,17 +3,21 @@
     max-width="500"
     class="mx-auto"
   >
-    <v-toolbar color="blue">
-      <v-toolbar-title>kondoumh</v-toolbar-title>
+    <v-toolbar>
+      <v-select
+        v-model="project"
+        :items="projects"
+        label="Project"
+        width=100
+        @change="fetchData"
+      ></v-select>
+      <v-spacer/>
+      <v-checkbox v-model="hidePinned" label="Hide pin" dense></v-checkbox>
       <v-spacer/>
       <v-btn icon color="gray" @click="fetchData">
         <v-icon>mdi-cached</v-icon>
       </v-btn>
       {{ updated }}
-    </v-toolbar>
-    <v-toolbar color="blue">
-      <v-spacer/>
-      <v-checkbox v-model="hidePinned" label="Hide Pinned"></v-checkbox>
     </v-toolbar>
     <v-list two-line>
       <template v-for="(item) in filteredPages">
@@ -95,7 +99,7 @@
       async fetchData () {
         const res = await fetch('/.netlify/functions/sbpages', {
           headers: {
-            'project': this.projectName,
+            'project': this.project,
           }
         })
         const json = await res.json()
@@ -130,7 +134,7 @@
         this.title = title
         const res = await fetch('/.netlify/functions/pageInfo', {
           headers: {
-            'project': this.projectName,
+            'project': this.project,
             'title': encodeURIComponent(title),
           }
         })
@@ -154,7 +158,8 @@
       }
     },
     data: () => ({
-      projectName: 'kondoumh',
+      projects: ["kondoumh", "help-jp"],
+      project: 'kondoumh',
       views: '',
       updated: '',
       hidePinned: true,
