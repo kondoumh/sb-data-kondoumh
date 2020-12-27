@@ -205,7 +205,7 @@ export default {
           .on('start', dragstarted)
           .on('drag', dragged)
           .on('end', dragended))
-        .on('click', clicked)
+        .on('click', this.openPage)
 
       nodeGroup.append('ellipse')
         .attr('cx', d => d.x)
@@ -222,31 +222,6 @@ export default {
         .style('fill', 'steelbule')
         .style('font-size', '11px')
         .text(d => d.title)
-        .append('a')
-        .attr('xlink:href', d => `https://scrapbox.io/${this.project}/${d.title}`)
-
-      function clicked(d) {
-        d3.selectAll('.selected').classed('selected', false)
-        d3.selectAll('.conected').classed('conected', false)
-        d3.selectAll('line').classed('linkSelected', false)
-
-        d3.select(this).classed('selected', true)
-
-        d3.selectAll('line')
-          .filter((v) => {
-            if (d == v.source) {
-              nodeGroup.each(vj => {
-                if (v.target == vj) d3.select(this).classed('conected', true)
-              })
-              return true
-            } else if (d == v.target) {
-              nodeGroup.each(vj => {
-                if (v.source == vj) d3.select(this).classed('conected', true)
-              })
-              return true
-            }
-          }).classed('linkSelected', true)
-      }
 
       const simulation = d3.forceSimulation()
         .force('link',
@@ -302,9 +277,6 @@ export default {
         d.fy = null
       }
 
-      d3.select('#resetButton')
-      .on('click', resetted)
-  
       const zoom = d3.zoom()
         .scaleExtent([1/3, 40])
         .on('zoom', zoomed)
@@ -316,15 +288,12 @@ export default {
         link.attr('transform', d3.event.transform)
         nodeGroup.attr('transform', d3.event.transform)
       }
-    
-      function resetted() {
-        link.transition()
-          .duration(750)
-          .call(zoom.transform, d3.zoomIdentity)
-        nodeGroup.transition()
-          .duration(750)
-          .call(zoom.transform, d3.zoomIdentity)
-      }
+    },
+    openPage(d) {
+      if (d.user) return
+      const page = encodeURIComponent(d.title)
+      const url = `https://scrapbox.io/${this.project}/${page}`
+      window.open(url)
     }
   }
 }
