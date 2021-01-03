@@ -81,18 +81,7 @@
         this.updated = this.formatDate(json.timestamp, false)
       },
       formatDate (timestamp, adjust=true) {
-        let date = new Date()
-        if (adjust) {
-          date.setTime(timestamp * 1000)
-        } else {
-          date.setTime(timestamp)
-        }
-        const params = {
-          year: 'numeric', month: 'numeric', day: 'numeric',
-          hour: 'numeric', minute: 'numeric', second: 'numeric',
-          hour12: false
-        }
-        return date.toLocaleString(navigator.language, params)
+        return helper.formatDate(timestamp, adjust)
       },
       pageImage (image) {
         return image ? image : 'img/icons/apple-touch-icon-120x120.png'
