@@ -33,7 +33,7 @@
             <v-list-item-subtitle v-html="formatDate(item.updated)"></v-list-item-subtitle>
           </v-list-item-content>
           <v-icon v-if="item.pin != 0" color="blue">mdi-pin</v-icon>
-          <v-list-item-action @click.stop="dialog = true" @click="pageInfo(item.title)">
+          <v-list-item-action @click.stop="pageInfoDialog = true" @click="fetchPageInfo(item.title)">
             <v-btn icon>
               <v-icon color="grey lighten-1">mdi-information</v-icon>
             </v-btn>
@@ -41,57 +41,24 @@
         </v-list-item>
       </template>
     </v-list>
-    <v-dialog
-      v-model="dialog"
-      max-width="400"
-    >
-      <v-card>
-        <v-card-title class="headline">
-          {{ title }}
-        </v-card-title>
-
-        <v-card-text>
-          Author: {{ author }}
-          <span v-for="(name, index) in collaborators" :key="index">, {{ name }}</span>
-        </v-card-text>
-
-        <v-card-text>
-          Views: {{ pageViews }} Linked: {{ pageLinked }}
-        </v-card-text>
-
-        <v-card-text>Descriptions</v-card-text>
-        <v-card-text class="text-left">
-          <div v-for="(text, index) in descriptions" :key="index">
-            {{ text }}
-          </div>
-        </v-card-text>
-
-        <v-img max-width="300" :src="imageSrc"></v-img>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="dialog = false"
-            :href="pageUrl"
-          >
-            Go
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
-        </v-card-actions>
-
-      </v-card>
-    </v-dialog>  </v-card>
+    <page-info
+      :pageInfoDialog = "pageInfoDialog"
+      :projectName = "project"
+      :title = "pageTitle"
+      :info = "pageInfo"
+      @result = "pageInfoDialog = false"
+    ></page-info>
+  </v-card>
 </template>
 
 <script>
+  import helper from './helper.js'
+  import PageInfo from './PageInfo.vue'
+
   export default {
+    components: {
+      'page-info': PageInfo
+    },
     async mounted () {
       this.fetchData()
     },
@@ -121,32 +88,12 @@
         return date.toLocaleString(navigator.language, params)
       },
       pageLink(title) {
-         return '<a href="https://scrapbox.io/kondoumh/' + encodeURIComponent(title)+ '">' + title + '</a>'
+         return `<a href="https://scrapbox.io/${this.project}/${encodeURIComponent(title)}">${title}</a>`
       },
-      async pageInfo (title) {
-        this.author = ''
-        this.pageViews = 0
-        this.pageLinked = 0
-        this.collaborators = []
-        this.descriptions = []
-        this.pageUrl = ''
-        this.imageSrc = ''
-        this.title = title
-        const res = await fetch('/.netlify/functions/pageInfo', {
-          headers: {
-            'project': this.project,
-            'title': encodeURIComponent(title),
-          }
-        })
-        const json = await res.json()
-        this.author = json.user
-        this.collaborators = json.collaborators
-        this.pageViews = json.views
-        this.pageLinked = json.linked
-        this.descriptions = json.descriptions
-        this.pageUrl = 'https://scrapbox.io/kondoumh/' + encodeURIComponent(title)
-        this.imageSrc = json.image ? json.image : 'img/dummy.png'
-      }
+      async fetchPageInfo (title) {
+        this.pageTitle = title
+        this.pageInfo = await helper.fetchPageInfo(this.project, title)
+      },
     },
     computed: {
       filteredPages() {
@@ -158,7 +105,7 @@
       }
     },
     data: () => ({
-      projects: ["kondoumh", "help-jp"],
+      projects: ['kondoumh', 'help-jp'],
       project: 'kondoumh',
       views: '',
       updated: '',
@@ -167,15 +114,9 @@
       pages: [],
       types: ['pin', 'updated', 'title', 'images'],
       itemsPerPage: 100,
-      title: '',
-      author: '',
-      pageViews: 0,
-      pageLinked: 0,
-      collaborators: [],
-      descriptions : [],
-      pageUrl: '',
-      imageSrc: '',
-      dialog: false
+      pageInfoDialog: false,
+      pageTitle: '',
+      pageInfo: {}
     })
   }
 </script>
