@@ -24,33 +24,42 @@
       :footer-props="{
         'items-per-page-options': [20, 25, 50, 100]
       }"
-      class="elevation-1"
-    >
+      class="elevation-1">
       <template v-slot:item.pin="{ item }">
         {{ item.pin != 0 ? "&#128204;" : "" }}
-      </template>
-      <template v-slot:item.views="{ item }">
-        {{ item.views }}
-      </template>
-      <template v-slot:item.linked="{ item }">
-        {{ item.linked }}
       </template>
       <template v-slot:item.updated="{ item }">
         {{ formatDate(item.updated) }}
       </template>
       <template v-slot:item.title="{ item }">
         <a
-        :href="'https://scrapbox.io/'+ sp + '/' + encodeTitle(item.title)"
-        target="_blank">{{ item.title }}</a>    </template>
-      <template v-slot:item.image="{ item }">
-        <img :src="item.image" style="width: auto; height: 25px">
+          :href="'https://scrapbox.io/'+ sp + '/' + encodeURIComponent(item.title)"
+          target="_blank">{{ item.title }}</a>
+      </template>
+      <template v-slot:item.action="{ item }">
+        <v-btn icon @click.stop="pageInfoDialog = true" @click="fetchPageInfo(item.title)">
+          <img :src="pageImage(item.image)" style="width: auto; height: 25px">
+        </v-btn>
       </template>
     </v-data-table>
+    <page-info
+      :pageInfoDialog="pageInfoDialog"
+      :projectName="sp"
+      :title="pageTitle"
+      :info="pageInfo"
+      @result="pageInfoDialog = false"
+     ></page-info>
   </v-card>
 </template>
 
 <script>
+  import helper from './helper.js'
+  import PageInfo from './PageInfo.vue'
+
   export default {
+    components: {
+      'page-info': PageInfo
+    },
     async mounted () {
       this.fetchData()
     },
@@ -85,9 +94,13 @@
         }
         return date.toLocaleString(navigator.language, params)
       },
-      encodeTitle(title) {
-        return encodeURIComponent(title)
+      pageImage (image) {
+        return image ? image : 'img/icons/apple-touch-icon-120x120.png'
       },
+      async fetchPageInfo (title) {
+        this.pageTitle = title
+        this.pageInfo = await helper.fetchPageInfo(this.sp, title)
+      }
     },
     watch: {
       options: {
@@ -116,8 +129,11 @@
         { text: 'linked', value: 'linked', width: '50px' },
         { text: 'updated', value: 'updated', width: '50px' },
         { text: 'title', value: 'title', sortable: false, width: '150px'},
-        { text: 'image', value: 'image', sortable: false, width: '350px' }
-      ]
+        { text: 'action', value: 'action', sortable: false, width: '10px' }
+      ],
+      pageInfoDialog: false,
+      pageTitle: '',
+      pageInfo: {}
     })
   }
 </script>
