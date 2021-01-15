@@ -60,6 +60,8 @@
       'page-info': PageInfo
     },
     async mounted () {
+      this.projects = helper.getProjects()
+      this.project = this.projects[0]
       this.fetchData()
     },
     methods: {
@@ -94,8 +96,8 @@
       }
     },
     data: () => ({
-      projects: ['kondoumh', 'help-jp'],
-      project: 'kondoumh',
+      projects: [],
+      project: '',
       views: '',
       updated: '',
       hidePinned: true,

@@ -25,4 +25,8 @@ async function fetchPageInfo(project, title) {
   return info
 }
 
-export default { formatDate, fetchPageInfo }
+function getProjects() {
+  return ['kondoumh', 'help-jp', 'comic-forum', 'icons', 'daiiz', 'june29']
+}
+
+export default { formatDate, fetchPageInfo, getProjects }
