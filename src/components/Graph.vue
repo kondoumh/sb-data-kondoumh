@@ -64,6 +64,7 @@
 
 <script>
 import * as d3 from 'd3'
+import helper from './helper.js'
 
 export default {
   name: 'graph',
@@ -147,7 +148,7 @@ export default {
     }
   }),
   async mounted () {
-    this.projects = ['kondoumh', 'help-jp']
+    this.projects = helper.getProjects()
     this.project = this.projects[0]
     this.width = document.querySelector('svg').clientWidth
     this.height = document.querySelector('svg').clientHeight
