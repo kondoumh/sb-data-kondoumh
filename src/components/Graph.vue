@@ -5,16 +5,13 @@
   >
     <svg id="svg"/>
     <v-toolbar dense width="400">
-      <v-radio-group
+      <v-select
         v-model="project"
-        :mandatory="true"
-        row
-        single-line
-        hide-details
-        >
-        <v-radio label="kondoumh" value="kondoumh"></v-radio>
-        <v-radio label="help-jp" value="help-jp"></v-radio>
-      </v-radio-group>
+        :items="projects"
+        width=100
+        dense
+        @change="fetchData"
+      ></v-select>
       <v-divider
         class="mx-4"
         inset
@@ -134,7 +131,8 @@ export default {
   data: () => ({
     graphData: [],
     showAuthor: false,
-    project: 'kondoumh',
+    projects: [],
+    project: '',
     width: 0,
     height: 0,
     linked: {
@@ -149,6 +147,8 @@ export default {
     }
   }),
   async mounted () {
+    this.projects = ['kondoumh', 'help-jp']
+    this.project = this.projects[0]
     this.width = document.querySelector('svg').clientWidth
     this.height = document.querySelector('svg').clientHeight
     await this.fetchData()
