@@ -4,7 +4,7 @@
       <v-select
         v-model="project"
         :items="projects"
-        label="Project"
+        dense
         @change="fetchData"
       ></v-select>
       <v-spacer/>
