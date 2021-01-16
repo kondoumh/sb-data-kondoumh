@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title>
       <v-select
-        v-model="sp"
+        v-model="project"
         :items="projects"
         label="Project"
         @change="fetchData"
@@ -33,7 +33,7 @@
       </template>
       <template v-slot:item.title="{ item }">
         <a
-          :href="'https://scrapbox.io/'+ sp + '/' + encodeURIComponent(item.title)"
+          :href="'https://scrapbox.io/'+ project + '/' + encodeURIComponent(item.title)"
           target="_blank">{{ item.title }}</a>
       </template>
       <template v-slot:item.action="{ item }">
@@ -44,7 +44,7 @@
     </v-data-table>
     <page-info
       :pageInfoDialog="pageInfoDialog"
-      :projectName="sp"
+      :projectName="project"
       :title="pageTitle"
       :info="pageInfo"
       @result="pageInfoDialog = false"
@@ -61,6 +61,8 @@
       'page-info': PageInfo
     },
     async mounted () {
+      this.projects = helper.getProjects()
+      this.project = this.projects[0]
       this.fetchData()
     },
     methods: {
@@ -69,7 +71,7 @@
         const skip = (page - 1) * itemsPerPage
         const res = await fetch(".netlify/functions/sbpages", {
           headers: {
-            "project": this.sp,
+            "project": this.project,
             "sortby": sortBy[0],
             "skip": skip,
             "limit": itemsPerPage,
@@ -88,7 +90,7 @@
       },
       async fetchPageInfo (title) {
         this.pageTitle = title
-        this.pageInfo = await helper.fetchPageInfo(this.sp, title)
+        this.pageInfo = await helper.fetchPageInfo(this.project, title)
       }
     },
     watch: {
@@ -100,8 +102,8 @@
       }
     },
     data: () => ({
-      sp: 'kondoumh',
-      projects: ["kondoumh", "help-jp"],
+      projects: [],
+      project: '',
       page: 1,
       pageCount: 0,
       length: 1,
