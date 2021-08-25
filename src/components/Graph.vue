@@ -189,6 +189,16 @@ export default {
     },
     async render() {
       d3.select('svg').selectAll('*').remove()
+
+      const zoom = d3.zoom()
+        .scaleExtent([1/3, 40])
+        .on('zoom', zoomed)
+
+      d3.select('svg')
+        .attr('viewBox', '0 0 1200 1400')
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .call(zoom)
+
       const link = d3.select('svg')
         .selectAll('line')
         .data(this.edges)
@@ -277,10 +287,6 @@ export default {
         d.fx = null
         d.fy = null
       }
-
-      const zoom = d3.zoom()
-        .scaleExtent([1/3, 40])
-        .on('zoom', zoomed)
 
       link.call(zoom)
       nodeGroup.call(zoom)
