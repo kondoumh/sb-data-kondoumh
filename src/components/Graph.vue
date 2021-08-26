@@ -83,8 +83,8 @@ export default {
         title: page.title,
         x: this.width * Math.random(),
         y: this.height * Math.random(),
-        rx: page.title.length * 3 + 10,
-        ry: 12,
+        rx: this.byteLength(page.title) * 2,
+        ry: 10,
         user: false
       }))
 
@@ -94,8 +94,8 @@ export default {
           title: user.name,
           x: this.width * Math.random(),
           y: this.height * Math.random(),
-          rx: 30,
-          ry: 12,
+          rx: this.byteLength(user.name),
+          ry: 10,
           user: true
         }))
         nodes = nodes.concat(users)
@@ -295,6 +295,10 @@ export default {
         link.attr('transform', d3.event.transform)
         nodeGroup.attr('transform', d3.event.transform)
       }
+    },
+    byteLength(str) {
+      str = (str==null) ? "" : str
+      return encodeURI(str).replace(/%../g, "*").length
     },
     openPage(d) {
       if (d.user) return
