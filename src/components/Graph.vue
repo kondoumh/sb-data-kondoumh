@@ -300,7 +300,8 @@ export default {
       str = (str==null) ? "" : str
       return encodeURI(str).replace(/%../g, "*").length
     },
-    openPage(d) {
+    openPage(e, d) {
+      console.log(d)
       if (d.user) return
       const page = encodeURIComponent(d.title)
       const url = `https://scrapbox.io/${this.project}/${page}`
