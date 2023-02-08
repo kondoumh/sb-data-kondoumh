@@ -291,9 +291,9 @@ export default {
       link.call(zoom)
       nodeGroup.call(zoom)
     
-      function zoomed() {
-        link.attr('transform', d3.event.transform)
-        nodeGroup.attr('transform', d3.event.transform)
+      function zoomed(e, d) {
+        link.attr('transform', e.transform)
+        nodeGroup.attr('transform', e.transform)
       }
     },
     byteLength(str) {
