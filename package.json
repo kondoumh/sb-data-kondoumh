@@ -14,7 +14,7 @@
     "encoding": "^0.1.13",
     "netlify-lambda": "^2.0.15",
     "node-fetch": "^2.6.7",
-    "node-sass": "^7.0.0",
+    "node-sass": "^9.0.0",
     "register-service-worker": "^1.7.2",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
